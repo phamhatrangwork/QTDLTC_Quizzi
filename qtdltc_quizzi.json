@@ -1,0 +1,1180 @@
+[
+  {
+    "id": 17,
+    "cau_hoi": "Tên biến có thể có độ dài tối đa là bao nhiêu ký tự?",
+    "options": [
+      "16 ký tự.",
+      "32 ký tự.",
+      "64 ký tự.",
+      "128 ký tự."
+    ],
+    "dap_an_dung": "32 ký tự."
+  },
+  {
+    "id": 15,
+    "cau_hoi": "Tên biến bao gồm những gì?",
+    "options": [
+      "Chữ cái, số, và dấu gạch dưới (_).",
+      "Chữ cái, số, và ký tự đặc biệt.",
+      "Chữ cái và ký tự đặc biệt.",
+      "Chữ cái, số, và khoảng trắng."
+    ],
+    "dap_an_dung": "Chữ cái, số, và dấu gạch dưới (_)."
+  },
+  {
+    "id": 16,
+    "cau_hoi": "Khi nào Stata sẽ không thực hiện câu lệnh trong do-file?",
+    "options": [
+      "Khi câu lệnh bắt đầu bằng ký tự *",
+      "Khi câu lệnh bắt đầu bằng ký tự #",
+      "Khi câu lệnh nằm giữa hai nhóm ký tự //",
+      "Khi câu lệnh bắt đầu bằng ký tự /"
+    ],
+    "dap_an_dung": "Khi câu lệnh bắt đầu bằng ký tự *"
+  },
+  {
+    "id": 12,
+    "cau_hoi": "Nếu muốn tạo tệp log có tên chứa kí tự trắng, ví dụ \"bai tap1\". Phương án nào sau đây là đúng:",
+    "options": [
+      "log using bai tap1",
+      "log using 'bai tap1'",
+      "log using \"bai tap1\"",
+      "Không thể tạo tệp log với tên chứa kí tự trắng"
+    ],
+    "dap_an_dung": "log using \"bai tap1\""
+  },
+  {
+    "id": 10,
+    "cau_hoi": "Trong số các tên biến sau, tên nào là hợp lệ?",
+    "options": [
+      "_macongty1.",
+      "1macongty.",
+      "macongty-1.",
+      "macongty@1."
+    ],
+    "dap_an_dung": "_macongty1."
+  },
+  {
+    "id": 6,
+    "cau_hoi": "Biến rời rạc thường được lưu trữ dưới dạng nào?",
+    "options": [
+      "Float và double.",
+      "Byte, int, và long.",
+      "Str và char.",
+      "Decimal và binary."
+    ],
+    "dap_an_dung": "Byte, int, và long."
+  },
+  {
+    "id": 13,
+    "cau_hoi": "Để mở xem tệp log file trong Stata, có thể sử dụng menu nào?",
+    "options": [
+      "File > View",
+      "Edit > Log > View",
+      "Data > Log > View",
+      "File > Log > Translate"
+    ],
+    "dap_an_dung": "File > View"
+  },
+  {
+    "id": 14,
+    "cau_hoi": "Chọn phương án sai:",
+    "options": [
+      "Đối với tên biến, Stata phân biệt chữ viết thường với chữ viết hoa",
+      "Các câu lệnh Stata có thể viết bằng chữ thường hoặc chữ hoa",
+      "Các tùy chọn được ký hiệu trong dấu ngoặc vuông [ ].",
+      "Một số lệnh Stata cho phép viết tắt."
+    ],
+    "dap_an_dung": "Các câu lệnh Stata có thể viết bằng chữ thường hoặc chữ hoa"
+  },
+  {
+    "id": 8,
+    "cau_hoi": "Cách nào sau đây KHÔNG phải là cách thoát khỏi chương trình STATA?",
+    "options": [
+      "Thực hiện menu: File > Exit.",
+      "Thực hiện lệnh từ cửa sổ Command: Exit.",
+      "Thực hiện đóng cửa sổ chương trình STATA.",
+      "Thực hiện menu: File > Close."
+    ],
+    "dap_an_dung": "Thực hiện menu: File > Close."
+  },
+  {
+    "id": 9,
+    "cau_hoi": "Cách nào sau đây KHÔNG phải là cách xem dữ liệu trong tệp data của STATA?",
+    "options": [
+      "Ấn vào biểu tượng Data editor (Edit).",
+      "Chọn Data -> Data editor -> Data editor (Browse) từ thanh Menu.",
+      "Chọn File -> Open từ thanh Menu.",
+      "Gõ lệnh Edit ở cửa sổ lệnh."
+    ],
+    "dap_an_dung": "Chọn File -> Open từ thanh Menu."
+  },
+  {
+    "id": 7,
+    "cau_hoi": "Sử dụng lệnh: log using vidu, text điều gì sẽ xảy ra?",
+    "options": [
+      "Tạo tệp log với tên vidu.smcl",
+      "Tạo tệp log với tên vidu.log dưới dạng văn bản",
+      "Tạo tệp log với tên vidu.txt dưới dạng văn bản",
+      "Không tạo tệp log vì thiếu tùy chọn replace"
+    ],
+    "dap_an_dung": "Tạo tệp log với tên vidu.log dưới dạng văn bản"
+  },
+  {
+    "id": 11,
+    "cau_hoi": "Khi chạy do-file mà không muốn STATA dừng lại khi gặp lỗi, cần sử dụng lệnh nào sau đây?",
+    "options": [
+      "do file_name",
+      "run file_name",
+      "do file_name, nostop",
+      "run file_name, stop"
+    ],
+    "dap_an_dung": "do file_name, nostop"
+  },
+  {
+    "id": 1,
+    "cau_hoi": "Các thuộc tính của đối tượng nghiên cứu trong một bảng số liệu được gọi là gì?",
+    "options": [
+      "Biến.",
+      "Dòng.",
+      "Quan sát.",
+      "Bản ghi."
+    ],
+    "dap_an_dung": "Biến."
+  },
+  {
+    "id": 5,
+    "cau_hoi": "Để chuyển đổi tệp \"vidu.smcl\" sang định dạng text và ghi đè lên tệp \"vidu.txt\" đã có sẵn, sử dụng lệnh nào?",
+    "options": [
+      "translate vidu.smcl vidu.txt",
+      "translate vidu.txt vidu.smcl",
+      "translate vidu.smcl vidu.txt, replace",
+      "translate vidu.txt vidu.smcl, replace"
+    ],
+    "dap_an_dung": "translate vidu.smcl vidu.txt, replace"
+  },
+  {
+    "id": 17,
+    "cau_hoi": "Alibaba sử dụng kỹ thuật nào để xác định hành vi gian lận của người bán và khách hàng?",
+    "options": [
+      "Hồ sơ (Profiling)",
+      "Đối sánh tương đồng (Similarity matching)",
+      "Phân cụm (Clustering)",
+      "Nhóm đồng xuất hiện (Co-occurrence grouping)"
+    ],
+    "dap_an_dung": "Đối sánh tương đồng (Similarity matching)"
+  },
+  {
+    "id": 3,
+    "cau_hoi": "Biến dùng để nhận dạng quan sát trong một bảng số liệu được gọi là gì?",
+    "options": [
+      "Biến định lượng.",
+      "Biến định tính.",
+      "Biến xác định.",
+      "Biến phân loại."
+    ],
+    "dap_an_dung": "Biến xác định."
+  },
+  {
+    "id": 2,
+    "cau_hoi": "Cửa sổ History trong STATA có chức năng gì?",
+    "options": [
+      "Hiển thị các biến mà người dùng đưa vào.",
+      "Hiển thị danh sách các lệnh mới thực hiện gần nhất.",
+      "Hiển thị kết quả thực hiện các lệnh.",
+      "Cung cấp thông tin về tệp dữ liệu hiện tại."
+    ],
+    "dap_an_dung": "Hiển thị danh sách các lệnh mới thực hiện gần nhất."
+  },
+  {
+    "id": 19,
+    "cau_hoi": "Phương pháp khai thác dữ liệu nào được coi là bước đầu tiên trong phân tích dữ liệu của hầu hết các công ty?",
+    "options": [
+      "Phân tích chẩn đoán",
+      "Phân tích mô tả",
+      "Phân tích dự đoán",
+      "Phân tích khám phá"
+    ],
+    "dap_an_dung": "Phân tích mô tả"
+  },
+  {
+    "id": 18,
+    "cau_hoi": "Kỹ thuật phân tích chẩn đoán nào có thể được sử dụng để nhóm các đối tượng có đặc điểm tương đồng trong cùng một tập dữ liệu",
+    "options": [
+      "Phân cụm (Clustering)",
+      "Đối sánh tương đồng (Similarity matching)",
+      "Hồ sơ (Profiling)",
+      "Nhóm đồng xuất hiện (Co-occurrence grouping)"
+    ],
+    "dap_an_dung": "Phân cụm (Clustering)"
+  },
+  {
+    "id": 21,
+    "cau_hoi": "Ba giai đoạn trong chu kỳ mối quan hệ khách hàng là gì?",
+    "options": [
+      "Tìm kiếm khách hàng, chăm sóc khách hàng, duy trì khách hàng",
+      "Tìm kiếm khách hàng, phát triển sản phẩm, chăm sóc khách hàng",
+      "Chăm sóc khách hàng, duy trì khách hàng, mở rộng thị trường",
+      "Tìm kiếm khách hàng, phát triển sản phẩm, mở rộng thị trường"
+    ],
+    "dap_an_dung": "Tìm kiếm khách hàng, chăm sóc khách hàng, duy trì khách hàng"
+  },
+  {
+    "id": 4,
+    "cau_hoi": "Lệnh doedit trong STATA có chức năng gì?",
+    "options": [
+      "Mở tệp dữ liệu.",
+      "Mở cửa sổ Results.",
+      "Mở cửa sổ do-file editor.",
+      "Chạy lệnh đã lưu trong do-file."
+    ],
+    "dap_an_dung": "Mở cửa sổ do-file editor."
+  },
+  {
+    "id": 16,
+    "cau_hoi": "Công cụ phân tích dữ liệu nào trong Excel được sử dụng để thực hiện các phép tính thống kê phức tạp như hồi quy, ANOVA, và kiểm định giả thuyết?",
+    "options": [
+      "Solver",
+      "PivotTable",
+      "Data Analysis Toolpak",
+      "Conditional Formatting"
+    ],
+    "dap_an_dung": "Data Analysis Toolpak"
+  },
+  {
+    "id": 20,
+    "cau_hoi": "Bước \"Triển khai giải pháp\" (Deployment) trong quy trình khai thác dữ liệu mang ý nghĩa thực tiễn nào đối với một ngân hàng?",
+    "options": [
+      "Chạy thử nghiệm mô hình trên một tập dữ liệu mới để xem độ chính xác đạt bao nhiêu phần trăm",
+      "Báo cáo kết quả phân tích bằng biểu đồ cho Giám đốc tài chính",
+      "Tích hợp thuật toán đã được phê duyệt vào hệ thống phần mềm lõi (Core banking) để tự động ra quyết định phê duyệt tín dụng",
+      "Thu thập thêm dữ liệu từ các mạng xã hội để chuẩn bị cho chu kỳ phân tích tiếp theo"
+    ],
+    "dap_an_dung": "Tích hợp thuật toán đã được phê duyệt vào hệ thống phần mềm lõi (Core banking) để tự động ra quyết định phê duyệt tín dụng"
+  },
+  {
+    "id": 15,
+    "cau_hoi": "Bước \"Triển khai giải pháp\" trong quy trình tiêu chuẩn cho khai thác dữ liệu trong nhiều lĩnh vực bao gồm hoạt động nào?",
+    "options": [
+      "Thử nghiệm mô hình với dữ liệu mới.",
+      "Phát triển thêm các giải pháp thay thế.",
+      "Thực hiện mô hình đã chọn vào quy trình kinh doanh thực tế.",
+      "Đánh giá dữ liệu từ nguồn bên ngoài."
+    ],
+    "dap_an_dung": "Thực hiện mô hình đã chọn vào quy trình kinh doanh thực tế."
+  },
+  {
+    "id": 13,
+    "cau_hoi": "Trong bước \"Hiểu về dữ liệu\" của quy trình tiêu chuẩn cho khai thác dữ liệu trong nhiều lĩnh vực, nhóm IT cần làm gì?",
+    "options": [
+      "Xác định và xây dựng các mô hình dữ liệu sơ bộ",
+      "Xác định và đánh giá dữ liệu cần thiết cho dự án.",
+      "Chuẩn hóa dữ liệu để đưa vào mô hình",
+      "Tối ưu hóa chi phí vận hành, khai thác dữ liệu"
+    ],
+    "dap_an_dung": "Xác định và đánh giá dữ liệu cần thiết cho dự án."
+  },
+  {
+    "id": 11,
+    "cau_hoi": "Trong phương pháp phân tích mô tả, kỹ thuật \"thống kê tóm tắt\" thường bao gồm những yếu tố nào?",
+    "options": [
+      "Doanh thu, chi phí và lợi nhuận",
+      "Vị trí, phạm vi, hình dạng và kích thước của dữ liệu.",
+      "Nguyên nhân và hệ quả của biến động",
+      "Dự đoán sự thay đổi của thị trường, xu hướng tương lai"
+    ],
+    "dap_an_dung": "Vị trí, phạm vi, hình dạng và kích thước của dữ liệu."
+  },
+  {
+    "id": 6,
+    "cau_hoi": "Giám đốc yêu cầu bạn làm một báo cáo \"Thống kê tóm tắt\" (Summary Statistics) thuộc nhóm Phân tích mô tả cho doanh thu năm qua. Yếu tố nào sau đây KHÔNG ĐƯỢC PHÉP xuất hiện trong báo cáo này?",
+    "options": [
+      "Độ lệch chuẩn cho thấy sự biến động doanh thu giữa các tháng",
+      "Doanh thu trung bình và trung vị của toàn công ty",
+      "Dự báo xác suất sụt giảm doanh thu trong quý 1 năm sau dựa trên xu hướng hiện tại",
+      "Biểu đồ phân phối hình chuông cho thấy hình dáng của dữ liệu doanh thu."
+    ],
+    "dap_an_dung": "Dự báo xác suất sụt giảm doanh thu trong quý 1 năm sau dựa trên xu hướng hiện tại"
+  },
+  {
+    "id": 7,
+    "cau_hoi": "Trong quy trình chuẩn CRISP-DM, sự khác biệt cốt lõi giữa bước \"Hiểu về dữ liệu\" (Data Understanding) và \"Chuẩn bị dữ liệu\" (Data Preparation) là gì?",
+    "options": [
+      "\"Hiểu về dữ liệu\" là việc làm sạch dữ liệu, còn \"Chuẩn bị dữ liệu\" là đưa dữ liệu vào mô hình học máy",
+      "\"Hiểu về dữ liệu\" là đánh giá tính khả thi và chất lượng của dữ liệu thô, trong khi \"Chuẩn bị dữ liệu\" là trực tiếp biến đổi, làm sạch và định dạng lại dữ liệu đó",
+      "\"Hiểu về dữ liệu\" do Ban giám đốc thực hiện, còn \"Chuẩn bị dữ liệu\" do bộ phận IT thực hiện",
+      "Tiêu chuẩn dữ liệu do khách hàng đưa ra."
+    ],
+    "dap_an_dung": "\"Hiểu về dữ liệu\" là đánh giá tính khả thi và chất lượng của dữ liệu thô, trong khi \"Chuẩn bị dữ liệu\" là trực tiếp biến đổi, làm sạch và định dạng lại dữ liệu đó"
+  },
+  {
+    "id": 8,
+    "cau_hoi": "Khi xử lý dữ liệu tài chính, nhận định nào sau đây về các công cụ khai thác dữ liệu là SAI?",
+    "options": [
+      "Tableau là công cụ cực kỳ mạnh mẽ trong việc trực quan hóa dữ liệu",
+      "Công cụ Data Analysis Toolpak trong Excel có khả năng quản trị và xử lý các cơ sở dữ liệu siêu lớn (Big Data) lên tới hàng Terabyte",
+      "SAS là phần mềm chuyên dụng cho phân tích thống kê nâng cao, khai phá dữ liệu và dự báo.",
+      "Excel Solver thường được sử dụng để giải quyết các bài toán tối ưu hóa phức tạp."
+    ],
+    "dap_an_dung": "Công cụ Data Analysis Toolpak trong Excel có khả năng quản trị và xử lý các cơ sở dữ liệu siêu lớn (Big Data) lên tới hàng Terabyte"
+  },
+  {
+    "id": 4,
+    "cau_hoi": "Phân tích đề xuất trong phương pháp khai thác dữ liệu chủ yếu trả lời những câu hỏi nào?",
+    "options": [
+      "“Nó sẽ diễn ra như thế nào?” và “Nên làm gì tiếp theo?”",
+      "“Điều gì sẽ xảy ra?” và “Làm thế nào để đạt được kết quả mong muốn?”",
+      "“Điều gì sẽ xảy ra?” và “Nên làm gì tiếp theo?”",
+      "“Điều gì đã xảy ra?” và “Tại sao điều này lại xảy ra?”"
+    ],
+    "dap_an_dung": "“Nó sẽ diễn ra như thế nào?” và “Nên làm gì tiếp theo?”"
+  },
+  {
+    "id": 12,
+    "cau_hoi": "Các hệ thống hỗ trợ quyết định trong phương pháp khai thác dữ liệu \"phân tích đề xuất\" thực hiện chức năng gì?",
+    "options": [
+      "Dự đoán xu hướng thị trường",
+      "Đề xuất các hành động dựa trên dữ liệu đầu vào",
+      "Phân tích dữ liệu tài chính",
+      "Kiểm soát chất lượng sản phẩm"
+    ],
+    "dap_an_dung": "Đề xuất các hành động dựa trên dữ liệu đầu vào"
+  },
+  {
+    "id": 10,
+    "cau_hoi": "Nếu một chuyên viên tài chính muốn sử dụng thuật toán Hồi quy (Regression) thuộc nhóm Phân tích dự đoán, bài toán nào sau đây là phù hợp nhất?",
+    "options": [
+      "Xác định xem một giao dịch thẻ tín dụng có phải là lừa đảo hay không (Có/Không)",
+      "Dự báo mức giá cổ phiếu cụ thể (ví dụ: 55.000 VNĐ) của một công ty vào ngày mai.",
+      "Phân chia khách hàng thành 3 nhóm: Rủi ro cao, rủi ro trung bình, rủi ro thấp",
+      "Tìm ra quy luật khách hàng thường mua thẻ tín dụng cùng với bảo hiểm nhân thọ."
+    ],
+    "dap_an_dung": "Dự báo mức giá cổ phiếu cụ thể (ví dụ: 55.000 VNĐ) của một công ty vào ngày mai."
+  },
+  {
+    "id": 14,
+    "cau_hoi": "Phân tích mô tả và chẩn đoán trong phương pháp khai thác dữ liệu thường được ghép nối để thực hiện nhiệm vụ gì?",
+    "options": [
+      "Mô tả dữ liệu trong tương lai và đưa ra dự đoán",
+      "Mô tả dữ liệu trong quá khứ và so sánh dữ liệu đó với điểm chuẩn",
+      "Dự đoán kết quả và đưa ra đề xuất",
+      "Tối ưu hóa chi phí sản xuất"
+    ],
+    "dap_an_dung": "Mô tả dữ liệu trong quá khứ và so sánh dữ liệu đó với điểm chuẩn"
+  },
+  {
+    "id": 9,
+    "cau_hoi": "Hồi quy (Regression) trong phương pháp khai thác dữ liệu \"phân tích dự đoán\" được sử dụng để làm gì?",
+    "options": [
+      "Dự đoán giá trị liên tục dựa trên biến đầu vào",
+      "Phân loại các giao dịch đáng ngờ",
+      "Dự đoán mối quan hệ giữa hai mục dữ liệu",
+      "Xác định các lớp từ các quan sát trước đó"
+    ],
+    "dap_an_dung": "Dự đoán giá trị liên tục dựa trên biến đầu vào"
+  },
+  {
+    "id": 5,
+    "cau_hoi": "Bước nào trong quy trình tiêu chuẩn cho khai thác dữ liệu trong nhiều lĩnh vực bao gồm việc đánh giá chất lượng dữ liệu?",
+    "options": [
+      "Chuẩn bị dữ liệu.",
+      "Xây dựng mô hình.",
+      "Hiểu về dữ liệu.",
+      "Triển khai giải pháp."
+    ],
+    "dap_an_dung": "Hiểu về dữ liệu."
+  },
+  {
+    "id": 3,
+    "cau_hoi": "SAS nổi bật nhất ở khả năng nào?",
+    "options": [
+      "Quản lý cơ sở dữ liệu",
+      "Phân tích thống kê, khai phá dữ liệu, dự báo",
+      "Thiết kế giao diện người dùng",
+      "Phát triển ứng dụng di động, lập trình web"
+    ],
+    "dap_an_dung": "Phân tích thống kê, khai phá dữ liệu, dự báo"
+  },
+  {
+    "id": 16,
+    "cau_hoi": "Đâu là đặc điểm của mô hình ra quyết định và quản trị từ trên xuống?",
+    "options": [
+      "Liên kết rõ ràng giữa cấp điều hành và vận hành",
+      "Tiêu chuẩn đặt tên dữ liệu do người dùng định hướng.",
+      "Quyết định được hình thành từ cấp cơ sở",
+      "Phân quyền mạnh cho các bộ phận"
+    ],
+    "dap_an_dung": "Liên kết rõ ràng giữa cấp điều hành và vận hành"
+  },
+  {
+    "id": 14,
+    "cau_hoi": "Quản trị dữ liệu trong tổ chức cần sự tham gia của những yếu tố nào?",
+    "options": [
+      "Dữ liệu – công cụ – báo cáo",
+      "Con người – quy trình – công nghệ",
+      "Hệ thống – thuật toán – dữ liệu",
+      "Người dùng – ứng dụng – cơ sở dữ liệu"
+    ],
+    "dap_an_dung": "Con người – quy trình – công nghệ"
+  },
+  {
+    "id": 12,
+    "cau_hoi": "Chi phí cung cấp dữ liệu có thể được tính cho người tiêu dùng theo những cách nào?",
+    "options": [
+      "Số lượng người dùng cuối.",
+      "Số lượng nguồn chính được sử dụng.",
+      "Số lượng ứng dụng đang sử dụng.",
+      "Tất cả các phương án trên"
+    ],
+    "dap_an_dung": "Tất cả các phương án trên"
+  },
+  {
+    "id": 13,
+    "cau_hoi": "Mô hình nào dưới đây yêu cầu sự đào tạo và phổ biến bắt buộc trong toàn tổ chức?",
+    "options": [
+      "Quản trị dữ liệu tập trung.",
+      "Quản trị dữ liệu từ trên xuống.",
+      "Quản trị dữ liệu từ dưới lên.",
+      "Quản trị dữ liệu Silo-in"
+    ],
+    "dap_an_dung": "Quản trị dữ liệu tập trung."
+  },
+  {
+    "id": 7,
+    "cau_hoi": "Theo nghĩa rộng, quản trị dữ liệu đảm bảo điều gì cho tổ chức?",
+    "options": [
+      "Dữ liệu được quản lý thống nhất và có kiểm soát",
+      "Dữ liệu được lưu trữ đúng chuẩn và được bảo mật tuyệt đối",
+      "Dữ liệu được xử lý nhanh và chính xác",
+      "Tập trung vào xử lý dữ liệu."
+    ],
+    "dap_an_dung": "Dữ liệu được quản lý thống nhất và có kiểm soát"
+  },
+  {
+    "id": 11,
+    "cau_hoi": "Theo hiệp hội quản lý dữ liệu quốc tế (DAMA), quản trị dữ liệu bao gồm những hoạt động nào?",
+    "options": [
+      "Lập kế hoạch và kiểm soát việc lưu trữ dữ liệu",
+      "Giám sát và kiểm soát việc quản lý dữ liệu.",
+      "Lập kế hoạch, giám sát và kiểm soát việc quản lý dữ liệu cũng như việc sử dụng dữ liệu và các nguồn liên quan đến dữ liệu.",
+      "Tối ưu hóa việc khai thác dữ liệu để hỗ trợ quyết định"
+    ],
+    "dap_an_dung": "Lập kế hoạch, giám sát và kiểm soát việc quản lý dữ liệu cũng như việc sử dụng dữ liệu và các nguồn liên quan đến dữ liệu."
+  },
+  {
+    "id": 8,
+    "cau_hoi": "Một hệ thống chấm điểm tín dụng AI của ngân hàng đưa ra cảnh báo sai lệch (False positive) do dữ liệu đầu vào thu thập từ mạng xã hội khách hàng chứa nhiều thông tin mỉa mai, hoặc không đúng sự thật. Vấn đề này vi phạm trực tiếp đặc tính 'V' nào của Big Data?",
+    "options": [
+      "Variety",
+      "Value",
+      "Veracity",
+      "Variability"
+    ],
+    "dap_an_dung": "Veracity"
+  },
+  {
+    "id": 10,
+    "cau_hoi": "Một thuật toán giao dịch tần suất cao (HFT) của quỹ đầu tư yêu cầu phân tích hàng triệu lệnh mua bán chứng khoán trong vòng chưa tới 1 mili-giây để tự động đặt lệnh trước đối thủ. Khía cạnh này minh họa RÕ NÉT NHẤT cho đặc tính nào của Big Data?",
+    "options": [
+      "Value",
+      "Volume",
+      "Velocity",
+      "Variability"
+    ],
+    "dap_an_dung": "Velocity"
+  },
+  {
+    "id": 15,
+    "cau_hoi": "Trong Big Data, quy mô lưu trữ dữ liệu đã chuyển từ megabyte và gigabyte sang đơn vị nào?",
+    "options": [
+      "Kilobyte và megabyte",
+      "Gigabyte và terabyte",
+      "Terabyte và petabyte",
+      "Petabyte và exabyte"
+    ],
+    "dap_an_dung": "Terabyte và petabyte"
+  },
+  {
+    "id": 2,
+    "cau_hoi": "Những tiêu chí nào thường được sử dụng để lựa chọn mô hình trong quy trình tiêu chuẩn cho khai thác dữ liệu trong nhiều lĩnh vực?",
+    "options": [
+      "Chi phí và thời gian triển khai, lợi nhuận kỳ vọng",
+      "Độ chính xác, khả năng diễn giải, và thời gian thực hiện.",
+      "Khả năng thu hút khách hàng, mở rộng thị trường",
+      "Số lượng dữ liệu cần thiết."
+    ],
+    "dap_an_dung": "Độ chính xác, khả năng diễn giải, và thời gian thực hiện."
+  },
+  {
+    "id": 1,
+    "cau_hoi": "Các yếu tố nào thường được sử dụng để phân đoạn khách hàng dựa trên nhân khẩu học?",
+    "options": [
+      "Độ tuổi, giới tính, vị trí địa lý, thu nhập, nghề nghiệp",
+      "Hành vi mua sắm, thói quen tiêu dùng, sở thích cá nhân",
+      "Tình trạng sức khỏe, lịch sử bệnh án, nhu cầu y tế",
+      "Phong cách sống, giá trị cá nhân, quan điểm chính trị"
+    ],
+    "dap_an_dung": "Độ tuổi, giới tính, vị trí địa lý, thu nhập, nghề nghiệp"
+  },
+  {
+    "id": 9,
+    "cau_hoi": "Mô hình quản trị dữ liệu Silo-in hoạt động hiệu quả khi:",
+    "options": [
+      "Tập trung vào các mô hình dữ liệu duy nhất.",
+      "Áp dụng tiêu chuẩn dữ liệu từ cấp cao xuống",
+      "Có sự tham gia của đại diện nhiều bộ phận trong ra quyết định",
+      "Giao quyền quyết định cho các chuyên gia bên ngoài."
+    ],
+    "dap_an_dung": "Có sự tham gia của đại diện nhiều bộ phận trong ra quyết định"
+  },
+  {
+    "id": 5,
+    "cau_hoi": "Trong Big Data, đặc tính nào phản ánh việc đánh giá giá trị kinh doanh của dữ liệu?",
+    "options": [
+      "Veracity",
+      "Visualization",
+      "Volume",
+      "Value"
+    ],
+    "dap_an_dung": "Value"
+  },
+  {
+    "id": 3,
+    "cau_hoi": "Mô hình nào phù hợp nhất khi tổ chức cần kiểm soát chặt chẽ dữ liệu và đảm bảo tính nhất quán cao nhất?",
+    "options": [
+      "Mô hình ra quyết định và quản trị tập trung",
+      "Mô hình ra quyết định và quản trị Silo-in",
+      "Mô hình ra quyết định và quản trị từ dưới lên",
+      "Mô hình ra quyết định và quản trị từ trên xuống"
+    ],
+    "dap_an_dung": "Mô hình ra quyết định và quản trị tập trung"
+  },
+  {
+    "id": 4,
+    "cau_hoi": "Đặc tính Velocity của Big Data để cập đến:",
+    "options": [
+      "Tính nhất quán của tập dữ liệu",
+      "Tốc độ dữ liệu được tạo và xử lý",
+      "Chất lượng của dữ liệu thu được",
+      "Khối lượng dữ liệu được tạo và lưu trữ"
+    ],
+    "dap_an_dung": "Tốc độ dữ liệu được tạo và xử lý"
+  },
+  {
+    "id": 15,
+    "cau_hoi": "Trong quy trình mô hình hóa dữ liệu tài chính, bước tiếp theo ngay sau huấn luyện mô hình là gì ?",
+    "options": [
+      "Xác định lại mục tiêu phân tích",
+      "Biểu diễn lại dữ liệu",
+      "Tinh chỉnh và đánh giá",
+      "Chọn mô hình phù hợp hơn"
+    ],
+    "dap_an_dung": "Tinh chỉnh và đánh giá"
+  },
+  {
+    "id": 1,
+    "cau_hoi": "Theo Trung tâm Nghiên cứu Ứng dụng Kinh doanh (BARC), mục tiêu nào sau đây không phải là mục tiêu trực tiếp của quản trị dữ liệu?",
+    "options": [
+      "Tạo điều kiện thuận lợi cho việc quản lý.",
+      "Nâng cao giá trị của dữ liệu.",
+      "Thiết lập các quy tắc nội bộ để sử dụng dữ liệu.",
+      "Tối đa hóa lợi nhuận kinh doanh"
+    ],
+    "dap_an_dung": "Tối đa hóa lợi nhuận kinh doanh"
+  },
+  {
+    "id": 6,
+    "cau_hoi": "Một doanh nghiệp lớn đa chi nhánh muốn giảm rủi ro mất kết nối giữa các bộ phận nhưng vẫn giữ tính chuyên môn hóa, nên chọn mô hình nào?",
+    "options": [
+      "Mô hình ra quyết định và quản trị tập trung",
+      "Mô hình ra quyết định và quản trị từ trên xuống",
+      "Mô hình ra quyết định và quản trị từ dưới lên",
+      "Mô hình ra quyết định và quản trị Silo-in"
+    ],
+    "dap_an_dung": "Mô hình ra quyết định và quản trị Silo-in"
+  },
+  {
+    "id": 16,
+    "cau_hoi": "Điều nào sau đây là một trong những mục tiêu cụ thể của mô hình hóa dữ liệu tài chính?",
+    "options": [
+      "Chuẩn hóa dữ liệu để đảm bảo tính nhất quán giữa các hệ thống",
+      "Xây dựng biểu diễn dữ liệu nhằm hỗ trợ dự đoán và ra quyết định tài chính",
+      "Loại bỏ hoàn toàn nhiễu trong dữ liệu đầu vào",
+      "Tối ưu hóa quy trình lưu trữ và truy xuất dữ liệu"
+    ],
+    "dap_an_dung": "Xây dựng biểu diễn dữ liệu nhằm hỗ trợ dự đoán và ra quyết định tài chính"
+  },
+  {
+    "id": 17,
+    "cau_hoi": "Khi đánh giá mô hình hóa dữ liệu tài chính, kỹ thuật nào sau đây được sử dụng để đánh giá độ chính xác của mô hình một cách toàn diện hơn?",
+    "options": [
+      "Phân chia dữ liệu.",
+      "Cross-validation.",
+      "Chỉ số đánh giá.",
+      "Giám sát mô hình sau triển khai"
+    ],
+    "dap_an_dung": "Cross-validation."
+  },
+  {
+    "id": 13,
+    "cau_hoi": "Yếu tố nào sau đây không phải là tiêu chí đánh giá chất lượng dữ liệu theo nghĩa trực tiếp?",
+    "options": [
+      "Độ chính xác",
+      "Tính đầy đủ",
+      "Tính nhất quán theo thời gian",
+      "Nguồn gốc dữ liệu nội bộ"
+    ],
+    "dap_an_dung": "Nguồn gốc dữ liệu nội bộ"
+  },
+  {
+    "id": 2,
+    "cau_hoi": "Theo Viện Quản trị Dữ liệu, nội dung nào sau đây không phải là nguyên tắc quản trị dữ liệu?",
+    "options": [
+      "Đảm bảo tính minh bạch",
+      "Nâng cao giá trị của dữ liệu",
+      "Trung thực trong việc trao đổi thông tin.",
+      "Xác định trách nhiệm về các quyết định liên quan đến dữ liệu."
+    ],
+    "dap_an_dung": "Nâng cao giá trị của dữ liệu"
+  },
+  {
+    "id": 14,
+    "cau_hoi": "Trong bước biểu diễn dữ liệu (data representation), hoạt động nào đóng vai trò cốt lõi?",
+    "options": [
+      "Lựa chọn thuật toán phù hợp với bài toán",
+      "Huấn luyện mô hình trên dữ liệu đã xử lý",
+      "Chuyển đổi dữ liệu về định dạng phù hợp",
+      "Đánh giá hiệu năng mô hình"
+    ],
+    "dap_an_dung": "Chuyển đổi dữ liệu về định dạng phù hợp"
+  },
+  {
+    "id": 18,
+    "cau_hoi": "Phương pháp nào phù hợp nhất để mô hình hóa mối quan hệ giữa biến đầu vào và giá trị tài chính liên tục?",
+    "options": [
+      "Hồi quy Tài chính.",
+      "Mạng Nơ-ron và Học Máy.",
+      "Phân Tích Chuỗi Thời Gian.",
+      "Mô hình Phân Tích Rủi Ro."
+    ],
+    "dap_an_dung": "Hồi quy Tài chính."
+  },
+  {
+    "id": 10,
+    "cau_hoi": "Một trong những khuyến nghị khi xây dựng hệ thống dữ liệu tài chính là gì?",
+    "options": [
+      "Tăng cường xử lý thủ công để kiểm soát",
+      "Chuyển sang tự động hóa cấp độ phân tích và ra quyết định",
+      "Giảm sự phức tạp của công nghệ để tiết kiệm chi phí",
+      "Giữ nguyên quy trình truyền thống"
+    ],
+    "dap_an_dung": "Chuyển sang tự động hóa cấp độ phân tích và ra quyết định"
+  },
+  {
+    "id": 7,
+    "cau_hoi": "Yếu tố nào sau đây không thuộc nhóm yếu tố cần xem xét trực tiếp trong mô hình hóa dữ liệu tài chính?",
+    "options": [
+      "Chất lượng dữ liệu",
+      "Nguồn dữ liệu",
+      "Thời gian xử lý mô hình",
+      "Tính biến động của dữ liệu tài chính"
+    ],
+    "dap_an_dung": "Thời gian xử lý mô hình"
+  },
+  {
+    "id": 9,
+    "cau_hoi": "Vai trò chiến lược của CFO trong quản trị dữ liệu tài chính là gì?",
+    "options": [
+      "Không có vai trò gì đặc biệt",
+      "Chỉ tập trung vào quản lý tài chính để phân phối cho các phòng ban",
+      "Kết nối và thúc đẩy hợp tác giữa các bộ phận",
+      "Hạn chế sự tham gia của CNTT vào hoạt động chung để giảm chi phí vận hành"
+    ],
+    "dap_an_dung": "Kết nối và thúc đẩy hợp tác giữa các bộ phận"
+  },
+  {
+    "id": 8,
+    "cau_hoi": "Kỹ thuật nào sau đây không được sử dụng để đánh giá và kiểm tra mô hình hóa dữ liệu tài chính?",
+    "options": [
+      "Phân chia dữ liệu.",
+      "Cross-validation.",
+      "Chỉ số đánh giá.",
+      "Giám sát mô hình"
+    ],
+    "dap_an_dung": "Giám sát mô hình"
+  },
+  {
+    "id": 11,
+    "cau_hoi": "Phương pháp nào sau đây được thiết kế chuyên biệt để định giá quyền chọn?",
+    "options": [
+      "Mô hình VaR",
+      "Mô hình ARIMA",
+      "Mô hình Black-Scholes",
+      "Mạng Nơ-ron"
+    ],
+    "dap_an_dung": "Mô hình Black-Scholes"
+  },
+  {
+    "id": 12,
+    "cau_hoi": "Trong giai đoạn triển khai và bảo trì mô hình, yếu tố nào không phải là yếu tố quan trọng cần xem xét?",
+    "options": [
+      "Tích hợp vào hệ thống.",
+      "Giám sát mô hình.",
+      "Điều chỉnh và cải tiến.",
+      "Lựa chọn mô hình."
+    ],
+    "dap_an_dung": "Lựa chọn mô hình."
+  },
+  {
+    "id": 3,
+    "cau_hoi": "Mô hình nào phổ biến trong phân tích chuỗi thời gian?",
+    "options": [
+      "Mô hình Black-Scholes",
+      "Mô hình VaR",
+      "Mô hình ARIMA",
+      "Hồi quy Logistic"
+    ],
+    "dap_an_dung": "Mô hình ARIMA"
+  },
+  {
+    "id": 5,
+    "cau_hoi": "Quy trình nào đảm bảo mô hình có thể áp dụng hiệu quả trên dữ liệu mới?",
+    "options": [
+      "Biểu diễn dữ liệu và chọn biến",
+      "Huấn luyện và kiểm định",
+      "Lựa chọn mô hình phù hợp",
+      "Chuẩn hóa dữ liệu đầu vào"
+    ],
+    "dap_an_dung": "Huấn luyện và kiểm định"
+  },
+  {
+    "id": 6,
+    "cau_hoi": "Mô hình nào sau đây gắn liền với việc định giá tài sản tài chính phái sinh?",
+    "options": [
+      "Mô hình Black-Scholes",
+      "Mô hình VaR",
+      "Mô hình ARIMA",
+      "Hồi quy Logistic"
+    ],
+    "dap_an_dung": "Mô hình Black-Scholes"
+  },
+  {
+    "id": 4,
+    "cau_hoi": "Khái niệm “tuân thủ” trong mô hình hóa dữ liệu tài chính gắn với nội dung nào?",
+    "options": [
+      "Đảm bảo mô hình tuân thủ các quy định pháp lý và chuẩn mực",
+      "Đảm bảo dữ liệu được cập nhật thường xuyên.",
+      "Đảm bảo mô hình hoạt động tốt trong điều kiện thay đổi của thị trường.",
+      "Đảm bảo mô hình có độ chính xác cao."
+    ],
+    "dap_an_dung": "Đảm bảo mô hình tuân thủ các quy định pháp lý và chuẩn mực"
+  },
+  {
+    "id": 2,
+    "cau_hoi": "Trong phân khúc khách hàng, dữ liệu tài chính có thể giúp doanh nghiệp xác định điều gì?",
+    "options": [
+      "Tối ưu chi phí vận hành nội bộ",
+      "Xác định sản phẩm phù hợp cho từng nhóm khách hàng",
+      "Quản lý nhân sự",
+      "Dự đoán xu hướng công nghệ"
+    ],
+    "dap_an_dung": "Xác định sản phẩm phù hợp cho từng nhóm khách hàng"
+  },
+  {
+    "id": 1,
+    "cau_hoi": "Giả định về tính dừng trong mô hình hóa dữ liệu tài chính để cập đến điều gì?",
+    "options": [
+      "Các biến không thay đổi theo thời gian",
+      "Dữ liệu không có biến động mạnh",
+      "Các đặc tính thống kê của chuỗi thời gian không đổi theo thời gian",
+      "Các quan sát độc lập hoàn toàn"
+    ],
+    "dap_an_dung": "Các đặc tính thống kê của chuỗi thời gian không đổi theo thời gian"
+  },
+  {
+    "id": 14,
+    "cau_hoi": "Trong thị trường dữ liệu, việc cấp phép sử dụng phù hợp có ý nghĩa quan trọng nhất ở khía cạnh nào?",
+    "options": [
+      "Bảo vệ quyền khai thác và tài sản trí tuệ của dữ liệu",
+      "Làm giảm trực tiếp chi phí vận hành dữ liệu",
+      "Tạo điều kiện mở rộng tệp khách hàng ngay lập tức",
+      "Rút ngắn thời gian xử lý dữ liệu cho người dùng cuối"
+    ],
+    "dap_an_dung": "Bảo vệ quyền khai thác và tài sản trí tuệ của dữ liệu"
+  },
+  {
+    "id": 16,
+    "cau_hoi": "Mô hình định giá nào gắn giấy phép sử dụng trực tiếp với từng hoạt động hoặc mục đích khai thác cụ thể?",
+    "options": [
+      "Định giá dựa trên trường hợp sử dụng",
+      "Định giá theo từng sản phẩm",
+      "Định giá dựa trên tệp",
+      "Giới hạn số lượng người dùng"
+    ],
+    "dap_an_dung": "Định giá dựa trên trường hợp sử dụng"
+  },
+  {
+    "id": 13,
+    "cau_hoi": "Yếu tố nào sau đây là một chỉ tiêu tài chính mang tính định lượng rõ nhất?",
+    "options": [
+      "Chất lượng đội ngũ quản lý",
+      "Triển vọng môi trường kinh doanh",
+      "Lợi nhuận gộp trong kỳ",
+      "Yếu tố pháp lý và quy định."
+    ],
+    "dap_an_dung": "Lợi nhuận gộp trong kỳ"
+  },
+  {
+    "id": 11,
+    "cau_hoi": "Thỏa thuận bản quyền trong cung cấp dữ liệu chủ yếu nhằm bảo vệ yếu tố nào sau đây?",
+    "options": [
+      "Cơ cấu chi phí và tỷ suất lợi nhuận",
+      "Doanh thu tương lai và quyền sở hữu trí tuệ",
+      "Quy mô thị trường và mạng lưới phân phối",
+      "Danh mục khách hàng và chuỗi cung ứng"
+    ],
+    "dap_an_dung": "Doanh thu tương lai và quyền sở hữu trí tuệ"
+  },
+  {
+    "id": 15,
+    "cau_hoi": "Định giá dựa trên trường hợp sử dụng liên quan đến gì?",
+    "options": [
+      "Các quy trình kinh doanh hoặc các báo cáo cụ thể cho các cơ quan quản lý hoặc khách hàng.",
+      "Các quy trình sản xuất và các quy trình marketing.",
+      "Các quy trình marketing và các quy trình nhân sự.",
+      "Các quy trình nhân sự và các quy trình kinh doanh."
+    ],
+    "dap_an_dung": "Các quy trình kinh doanh hoặc các báo cáo cụ thể cho các cơ quan quản lý hoặc khách hàng."
+  },
+  {
+    "id": 17,
+    "cau_hoi": "Theo tính chất tài chính, dữ liệu tài chính gồm những loại nào?",
+    "options": [
+      "Dữ liệu tài chính nội bộ và dữ liệu tài chính bên ngoài.",
+      "Tài sản và nợ phải trả.",
+      "Dữ liệu định lượng và định tính.",
+      "Dữ liệu tài chính lịch sử và dữ liệu tài chính hiện tại."
+    ],
+    "dap_an_dung": "Dữ liệu định lượng và định tính."
+  },
+  {
+    "id": 9,
+    "cau_hoi": "Định giá theo từng sản phẩm thường áp dụng cho loại dữ liệu nào?",
+    "options": [
+      "Dữ liệu liên quan đến \"danh mục đầu tư\".",
+      "Dữ liệu liên quan đến báo cáo tài chính.",
+      "Dữ liệu liên quan đến nghiên cứu thị trường.",
+      "Dữ liệu liên quan đến báo cáo môi trường."
+    ],
+    "dap_an_dung": "Dữ liệu liên quan đến \"danh mục đầu tư\"."
+  },
+  {
+    "id": 12,
+    "cau_hoi": "Dữ liệu về lãi suất và tỷ giá hối đoái thuộc loại nào?",
+    "options": [
+      "Dữ liệu tài chính nội bộ.",
+      "Dữ liệu tài chính bên ngoài.",
+      "Dữ liệu tài chính lịch sử.",
+      "Dữ liệu tài chính dự báo."
+    ],
+    "dap_an_dung": "Dữ liệu tài chính bên ngoài."
+  },
+  {
+    "id": 10,
+    "cau_hoi": "Về nguyên tắc, thỏa thuận bản quyền dữ liệu thường được xây dựng trên cơ sở nào?",
+    "options": [
+      "Mức sinh lời kỳ vọng của nhà cung cấp dữ liệu",
+      "Tổng chi phí tạo lập và duy trì dữ liệu",
+      "Giá trị mà khách hàng thực sự nhận được từ dữ liệu",
+      "Quy mô của thị trường mà dữ liệu đang phục vụ"
+    ],
+    "dap_an_dung": "Giá trị mà khách hàng thực sự nhận được từ dữ liệu"
+  },
+  {
+    "id": 7,
+    "cau_hoi": "Biến thể phổ biến của mô hình định giá theo từng sản phẩm là hình thức nào sau đây?",
+    "options": [
+      "Thu phí theo từng lần truy cập hoặc từng lần xem báo cáo",
+      "Thu phí cố định theo tháng bất kể mức độ sử dụng",
+      "Thu phí định kỳ theo năm cho toàn bộ hệ thống",
+      "Thu phí theo số lượng khách hàng cuối cùng của doanh nghiệp"
+    ],
+    "dap_an_dung": "Thu phí theo từng lần truy cập hoặc từng lần xem báo cáo"
+  },
+  {
+    "id": 6,
+    "cau_hoi": "Định giá hàng loạt còn được gọi là:",
+    "options": [
+      "Định giá dựa trên trường hợp sử dụng",
+      "Định giá theo từng sản phẩm",
+      "Định giá dựa trên tệp",
+      "Giới hạn số lượng người dùng"
+    ],
+    "dap_an_dung": "Định giá dựa trên tệp"
+  },
+  {
+    "id": 8,
+    "cau_hoi": "Trong các dữ liệu sau, đâu là dữ liệu tài chính mang tính định tính?",
+    "options": [
+      "Doanh thu thuần",
+      "Tổng chi phí hoạt động",
+      "Biên lợi nhuận gộp",
+      "Năng lực và chất lượng quản trị điều hành"
+    ],
+    "dap_an_dung": "Năng lực và chất lượng quản trị điều hành"
+  },
+  {
+    "id": 4,
+    "cau_hoi": "Các mô hình cấp phép nào được áp dụng cho việc định giá dữ liệu?",
+    "options": [
+      "Định giá theo từng sản phẩm, định giá theo từng khách hàng, định giá theo từng năm, định giá theo từng tháng.",
+      "Định giá theo từng năm, định giá theo từng tháng, định giá theo từng tệp, định giá theo từng sản phẩm.",
+      "Định giá theo từng tệp, định giá theo từng khách hàng, định giá theo từng sản phẩm, định giá theo từng tháng.",
+      "Định giá theo từng sản phẩm, định giá dựa trên tệp, giới hạn số lượng người dùng, định giá dựa trên trường hợp sử dụng."
+    ],
+    "dap_an_dung": "Định giá theo từng sản phẩm, định giá dựa trên tệp, giới hạn số lượng người dùng, định giá dựa trên trường hợp sử dụng."
+  },
+  {
+    "id": 5,
+    "cau_hoi": "Khái niệm “quyền lợi trong quản lý dữ liệu” gắn trực tiếp với nội dung nào dưới đây?",
+    "options": [
+      "Kiểm soát chi phí và tối ưu lợi nhuận từ dữ liệu",
+      "Kiểm soát quyền đối với nội dung dữ liệu và việc báo cáo sử dụng dữ liệu",
+      "Kiểm soát quy mô thị trường khai thác dữ liệu",
+      "Kiểm soát hành vi mua và nhu cầu của khách hàng dữ liệu"
+    ],
+    "dap_an_dung": "Kiểm soát quyền đối với nội dung dữ liệu và việc báo cáo sử dụng dữ liệu"
+  },
+  {
+    "id": 1,
+    "cau_hoi": "Mục tiêu chính của các mô hình định giá là gì?",
+    "options": [
+      "Tăng cường lợi nhuận cho nhà cung cấp.",
+      "Đảm bảo khách hàng luôn mua sản phẩm.",
+      "Đạt được sự cân bằng giữa việc phục vụ khách hàng và giá trị nhận được từ nhà cung cấp.",
+      "Tối đa hóa số lượng giấy phép bán ra."
+    ],
+    "dap_an_dung": "Đạt được sự cân bằng giữa việc phục vụ khách hàng và giá trị nhận được từ nhà cung cấp."
+  },
+  {
+    "id": 15,
+    "cau_hoi": "Lợi ích nổi bật của việc quản lý và chia sẻ thông tin bằng cơ sở dữ liệu là gì?",
+    "options": [
+      "Tăng khả năng phối hợp, hỗ trợ ra quyết định và sử dụng dữ liệu hiệu quả cho nhiều mục đích khác nhau.",
+      "Làm giảm nhu cầu sử dụng thông tin giữa các bộ phận khác nhau.",
+      "Chỉ giúp tiết kiệm không gian lưu trữ so với lưu hồ sơ giấy.",
+      "Giúp loại bỏ hoàn toàn sai sót trong quá trình xử lý dữ liệu"
+    ],
+    "dap_an_dung": "Tăng khả năng phối hợp, hỗ trợ ra quyết định và sử dụng dữ liệu hiệu quả cho nhiều mục đích khác nhau."
+  },
+  {
+    "id": 17,
+    "cau_hoi": "Dữ liệu tài chính thường được sử dụng vào mục đích nào sau đây?",
+    "options": [
+      "Thay thế toàn bộ hoạt động quản trị, điều hành và tiếp thị của doanh nghiệp.",
+      "Đo lường, phân tích, dự báo và hỗ trợ quản lý các hoạt động tài chính.",
+      "Chỉ phục vụ cho công tác kiểm toán và quyết toán cuối kỳ.",
+      "Lưu trữ hồ sơ giao dịch để đối chiếu khi cần, không phục vụ phân tích."
+    ],
+    "dap_an_dung": "Đo lường, phân tích, dự báo và hỗ trợ quản lý các hoạt động tài chính."
+  },
+  {
+    "id": 2,
+    "cau_hoi": "Trong các loại dữ liệu sau, dữ liệu nào không thuộc nhóm dữ liệu tài chính bên ngoài của doanh nghiệp?",
+    "options": [
+      "Dữ liệu về giá cổ phiếu niêm yết trên thị trường",
+      "Thông tin về lãi suất thị trường và tỷ giá hối đoái",
+      "Báo cáo tài chính công bố của doanh nghiệp đối thủ",
+      "Nhật ký kế toán và sổ cái tổng hợp của doanh nghiệp"
+    ],
+    "dap_an_dung": "Nhật ký kế toán và sổ cái tổng hợp của doanh nghiệp"
+  },
+  {
+    "id": 3,
+    "cau_hoi": "Định giá dựa trên tệp thường được áp dụng trong trường hợp nào?",
+    "options": [
+      "Khi sản phẩm dữ liệu được phân chia thành các danh mục khác nhau.",
+      "Khi sản phẩm dữ liệu chỉ tồn tại dưới dạng một báo cáo tổng hợp duy nhất",
+      "Khi dữ liệu không thể tách thành bất kỳ đơn vị lưu trữ nào",
+      "Khi dữ liệu được định giá hoàn toàn theo nhóm khách hàng sử dụng"
+    ],
+    "dap_an_dung": "Khi sản phẩm dữ liệu được phân chia thành các danh mục khác nhau."
+  },
+  {
+    "id": 16,
+    "cau_hoi": "Trong quá trình khai thác cơ sở dữ liệu, người dùng có thể thực hiện hoạt động nào sau đây?",
+    "options": [
+      "Chỉ được xem dữ liệu đã có sẵn mà không thể tác động lên dữ liệu.",
+      "Chỉ có thể thêm mới dữ liệu nhưng không thể chỉnh sửa hay truy xuất.",
+      "Sử dụng các công cụ hoặc ngôn ngữ truy vấn để tìm kiếm, lọc và trích xuất thông tin cần thiết.",
+      "Chủ yếu sử dụng cơ sở dữ liệu để lưu trữ tạm thời trong bộ nhớ máy tính"
+    ],
+    "dap_an_dung": "Sử dụng các công cụ hoặc ngôn ngữ truy vấn để tìm kiếm, lọc và trích xuất thông tin cần thiết."
+  },
+  {
+    "id": 14,
+    "cau_hoi": "Dữ liệu tài chính có thể liên quan đến những đối tượng nào?",
+    "options": [
+      "Chỉ liên quan đến doanh nghiệp và các tổ chức kinh tế.",
+      "Chỉ liên quan đến cá nhân có phát sinh thu nhập và nghĩa vụ thuế.",
+      "Chỉ liên quan đến các tổ chức tài chính như ngân hàng, công ty bảo hiểm và quỹ đầu tư.",
+      "Liên quan đến cá nhân, tổ chức và các thực thể kinh tế khác có hoạt động tài chính."
+    ],
+    "dap_an_dung": "Liên quan đến cá nhân, tổ chức và các thực thể kinh tế khác có hoạt động tài chính."
+  },
+  {
+    "id": 13,
+    "cau_hoi": "Báo cáo tài chính nào cho thấy tình hình tài sản, nợ phải trả và vốn chủ sở hữu của một doanh nghiệp tại một thời điểm cụ thể?",
+    "options": [
+      "Báo cáo tình hình tài chính",
+      "Báo cáo kết quả hoạt động kinh doanh (Income Statement)",
+      "Báo cáo lưu chuyển tiền tệ (Cash Flow Statement)",
+      "Báo cáo tình hình kế toán"
+    ],
+    "dap_an_dung": "Báo cáo tình hình tài chính"
+  },
+  {
+    "id": 18,
+    "cau_hoi": "Báo cáo nào phản ánh doanh thu, chi phí và lợi nhuận của doanh nghiệp trong một kỳ kế toán?",
+    "options": [
+      "Báo cáo tình hình tài chính",
+      "Báo cáo kết quả hoạt động kinh doanh (Income Statement)",
+      "Báo cáo lưu chuyển tiền tệ (Cash Flow Statement)",
+      "Báo cáo tình hình kế toán"
+    ],
+    "dap_an_dung": "Báo cáo kết quả hoạt động kinh doanh (Income Statement)"
+  },
+  {
+    "id": 10,
+    "cau_hoi": "Báo cáo lưu chuyển tiền tệ cung cấp thông tin gì?",
+    "options": [
+      "Tình hình tài sản, nợ phải trả và vốn chủ sở hữu",
+      "Doanh thu, chi phí và lợi nhuận",
+      "Các luồng tiền vào và ra khỏi doanh nghiệp",
+      "Khả năng sinh lời của doanh nghiệp"
+    ],
+    "dap_an_dung": "Các luồng tiền vào và ra khỏi doanh nghiệp"
+  },
+  {
+    "id": 9,
+    "cau_hoi": "Để hạn chế tình trạng lạm dụng dữ liệu trong quá trình khai thác và sử dụng, người sử dụng dữ liệu cần thực hiện biện pháp nào sau đây?",
+    "options": [
+      "Đối sánh nhu cầu sử dụng dữ liệu với các dịch vụ dữ liệu hiện có trên thị trường trước khi lựa chọn.",
+      "Ưu tiên mua càng nhiều dịch vụ dữ liệu càng tốt để tránh thiếu hụt thông tin trong quá trình sử dụng.",
+      "Sử dụng dữ liệu theo nhu cầu thực tế mà không cần xem xét mức độ phù hợp của nguồn cung cấp dữ liệu.",
+      "Hạn chế tối đa việc sử dụng các dịch vụ dữ liệu nhằm loại bỏ hoàn toàn nguy cơ lạm dụng dữ liệu"
+    ],
+    "dap_an_dung": "Đối sánh nhu cầu sử dụng dữ liệu với các dịch vụ dữ liệu hiện có trên thị trường trước khi lựa chọn."
+  },
+  {
+    "id": 12,
+    "cau_hoi": "Dữ liệu tài chính là gì?",
+    "options": [
+      "Thông tin liên quan đến các hoạt động tài chính chính của một tổ chức, cá nhân hoặc một tổ chức kinh tế thực tế khác.",
+      "Toàn bộ thông tin phát sinh trong hoạt động sản xuất, kinh doanh và nhân sự của doanh nghiệp.",
+      "Các dữ liệu chỉ liên quan đến doanh thu, chi phí và lợi nhuận của doanh nghiệp.",
+      "Các con số kế toán được thu thập để lập báo cáo tài chính cuối năm."
+    ],
+    "dap_an_dung": "Thông tin liên quan đến các hoạt động tài chính chính của một tổ chức, cá nhân hoặc một tổ chức kinh tế thực tế khác."
+  },
+  {
+    "id": 11,
+    "cau_hoi": "Dữ liệu là gì?",
+    "options": [
+      "Là những con số hoặc ký hiệu chỉ được sử dụng trong hoạt động thống kê và tính toán.",
+      "Là thông tin đã được xử lý, sắp xếp hoàn chỉnh và có thể sử dụng ngay cho việc ra quyết định.",
+      "Là các sự kiện, giá trị hoặc tín hiệu thô được thu thập từ thực tế, chưa nhất thiết đã qua xử lý hay diễn giải.",
+      "Là tập hợp các nội dung đa phương tiện như hình ảnh, âm thanh và video được lưu trữ trong máy tính"
+    ],
+    "dap_an_dung": "Là các sự kiện, giá trị hoặc tín hiệu thô được thu thập từ thực tế, chưa nhất thiết đã qua xử lý hay diễn giải."
+  },
+  {
+    "id": 1,
+    "cau_hoi": "Nội dung nào mô tả đầy đủ nhất về dữ liệu tài chính?",
+    "options": [
+      "Chỉ bao gồm các số liệu kế toán dùng để tổng hợp báo cáo cuối kỳ.",
+      "Bao gồm các số liệu, chỉ tiêu và thông tin liên quan, được sử dụng để đo lường, phân tích, dự báo và quản lý hoạt động tài chính.",
+      "Chỉ bao gồm dữ liệu có cấu trúc được lưu trong bảng tính hoặc phần mềm kế toán.",
+      "Bao gồm mọi loại dữ liệu của doanh nghiệp, kể cả dữ liệu truyền thông và hình ảnh quảng bá."
+    ],
+    "dap_an_dung": "Bao gồm các số liệu, chỉ tiêu và thông tin liên quan, được sử dụng để đo lường, phân tích, dự báo và quản lý hoạt động tài chính."
+  },
+  {
+    "id": 3,
+    "cau_hoi": "Tỷ giá hối đoái (Exchange Rates) đo lường điều gì?",
+    "options": [
+      "Giá cổ phiếu của các công ty niêm yết trên sàn giao dịch chứng khoán",
+      "Chi phí vay vốn trên thị trường tài chính",
+      "Tỷ lệ chuyển đổi giữa các đồng tiền khác nhau",
+      "Sự tăng giá chung của hàng hóa và dịch vụ"
+    ],
+    "dap_an_dung": "Tỷ lệ chuyển đổi giữa các đồng tiền khác nhau"
+  },
+  {
+    "id": 6,
+    "cau_hoi": "Dạng dữ liệu nào phổ biến nhất và được sử dụng rộng rãi trong lĩnh vực tin học?",
+    "options": [
+      "Dữ liệu hình ảnh số, do có khả năng truyền tải lượng thông tin trực quan lớn",
+      "Dữ liệu âm thanh số, vì gắn liền với hầu hết các hệ thống giao tiếp hiện đại",
+      "Dữ liệu ngôn ngữ, được biểu diễn dưới dạng chữ viết, chữ số hoặc tiếng nói",
+      "Dữ liệu mùi, do ngày càng được quan tâm trong các hệ thống cảm biến thông minh"
+    ],
+    "dap_an_dung": "Dữ liệu ngôn ngữ, được biểu diễn dưới dạng chữ viết, chữ số hoặc tiếng nói"
+  },
+  {
+    "id": 4,
+    "cau_hoi": "Lãi suất (Interest Rates) phản ánh điều gì?",
+    "options": [
+      "Giá cổ phiếu của các công ty niêm yết trên sàn giao dịch chứng khoán",
+      "Chi phí vay vốn trên thị trường tài chính",
+      "Tỷ lệ chuyển đổi giữa các đồng tiền khác nhau",
+      "Tốc độ tăng trưởng của tổng sản phẩm quốc nội"
+    ],
+    "dap_an_dung": "Chi phí vay vốn trên thị trường tài chính"
+  },
+  {
+    "id": 2,
+    "cau_hoi": "Mục đích chính của cơ sở dữ liệu là gì?",
+    "options": [
+      "Lưu trữ dữ liệu dưới dạng văn bản, hình ảnh và âm thanh để tra cứu khi cần.",
+      "Tổ chức lưu trữ dữ liệu nhằm phục vụ việc truy cập, khai thác và xử lý thông tin của nhiều người dùng hoặc nhiều ứng dụng.",
+      "Hỗ trợ thiết kế biểu mẫu và giao diện nhập dữ liệu chuyên nghiệp.",
+      "Tạo môi trường chia sẻ tệp tin nhanh hơn giữa các phòng ban trong doanh nghiệp."
+    ],
+    "dap_an_dung": "Tổ chức lưu trữ dữ liệu nhằm phục vụ việc truy cập, khai thác và xử lý thông tin của nhiều người dùng hoặc nhiều ứng dụng."
+  },
+  {
+    "id": 7,
+    "cau_hoi": "Cơ sở dữ liệu (CSDL) là gì?",
+    "options": [
+      "Một tập hợp dữ liệu số được lưu rải rác trên nhiều thiết bị lưu trữ khác nhau.",
+      "Một hệ thống lưu trữ dữ liệu có tổ chức, cho phép lưu trữ, cập nhật và khai thác thông tin hiệu quả.",
+      "Một phần mềm hỗ trợ nhập liệu và trình bày báo cáo thống kê.",
+      "Một bộ nhớ điện tử dùng để sao lưu dữ liệu lâu dài."
+    ],
+    "dap_an_dung": "Một hệ thống lưu trữ dữ liệu có tổ chức, cho phép lưu trữ, cập nhật và khai thác thông tin hiệu quả."
+  },
+  {
+    "id": 8,
+    "cau_hoi": "Chỉ số thanh khoản (Liquidity Ratios) đo lường điều gì?",
+    "options": [
+      "Khả năng của doanh nghiệp trong việc thanh toán các khoản nợ ngắn hạn",
+      "Khả năng sinh lời của doanh nghiệp từ các hoạt động kinh doanh",
+      "Mức độ sử dụng nợ của doanh nghiệp",
+      "Tình hình tài sản, nợ phải trả và vốn chủ sở hữu"
+    ],
+    "dap_an_dung": "Khả năng của doanh nghiệp trong việc thanh toán các khoản nợ ngắn hạn"
+  },
+  {
+    "id": 5,
+    "cau_hoi": "Chỉ số nào đo lường khả năng sinh lời của doanh nghiệp từ các hoạt động kinh doanh?",
+    "options": [
+      "Chỉ số thanh khoản (Liquidity Ratios)",
+      "Chỉ số khả năng sinh lời (Profitability Ratios)",
+      "Chỉ số nợ (Debt Ratios)",
+      "Chỉ số thất nghiệp (Unemployment Rate)"
+    ],
+    "dap_an_dung": "Chỉ số khả năng sinh lời (Profitability Ratios)"
+  }
+]
+```

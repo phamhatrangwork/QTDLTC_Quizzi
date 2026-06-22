@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quizzi</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --cream:#FBF6F0;--cream-deep:#F3E8DD;--paper:#FFFDFA;--line:#E6D9C8;
+  --matcha-50:#EFF4E4;--matcha-100:#DEEAC9;--matcha-300:#B6CE93;--matcha-500:#8AAD63;--matcha-600:#6F9249;--matcha-700:#56753A;
+  --pink-50:#FCEFF2;--pink-100:#F8DCE4;--pink-300:#F0AFC4;--pink-500:#E186A4;--pink-600:#CC6789;--pink-700:#A84C6C;
+  --warn-bg:#FFF3E0;--warn-border:#FFB74D;--warn-text:#E65100;
+  --ink:#3B342B;--ink-soft:#7A7062;--ink-faint:#A89C8B;
+  --shadow:0 1px 2px rgba(59,52,43,.06),0 8px 24px rgba(59,52,43,.06);
+  --radius:18px;--radius-sm:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Be Vietnam Pro',sans-serif;background:radial-gradient(ellipse at 10% 0%,rgba(225,134,164,.08) 0%,transparent 55%),radial-gradient(ellipse at 90% 100%,rgba(138,173,99,.1) 0%,transparent 55%),var(--cream);color:var(--ink);min-height:100vh;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+
+// ── State ──────────────────────────────────────────────────────────────────
+let DATA = null;
+const LS = {
+  get history(){ try{return JSON.parse(localStorage.getItem('quiz_history')||'[]')}catch{return[]} },
+  set history(v){ localStorage.setItem('quiz_history',JSON.stringify(v)) },
+  get wrongCount(){ try{return JSON.parse(localStorage.getItem('quiz_wrong_count')||'{}')}catch{return{}} },
+  set wrongCount(v){ localStorage.setItem('quiz_wrong_count',JSON.stringify(v)) },
+  get chapterDone(){ try{return JSON.parse(localStorage.getItem('quiz_chapter_done')||'{}')}catch{return{}} },
+  set chapterDone(v){ localStorage.setItem('quiz_chapter_done',JSON.stringify(v)) },
+};
+
+// ── CSS injection ───────────────────────────────────────────────────────────
+const css = `
+/* ─ Layout ─ */
+#topbar{position:sticky;top:0;z-index:40;background:rgba(251,246,240,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:0 28px;height:64px;display:flex;align-items:center;gap:20px;}
+#topbar .logo{font-family:'Fraunces',serif;font-size:1.25rem;font-weight:600;color:var(--ink);flex:none;text-decoration:none;}
+#topbar .logo span{color:var(--pink-500);}
+#progress-dots{display:flex;gap:7px;align-items:center;flex:1;}
+#progress-dots .dot{width:8px;height:8px;border-radius:50%;background:var(--line);transition:background .3s;cursor:pointer;flex:none;}
+#progress-dots .dot.done{background:linear-gradient(135deg,var(--pink-400,#ec9ab8),var(--matcha-500));}
+#topbar .hist-btn{flex:none;border:1px solid var(--line);background:var(--paper);color:var(--ink-soft);font-size:.85rem;font-family:'Be Vietnam Pro',sans-serif;padding:7px 14px;border-radius:99px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:border-color .2s,color .2s;}
+#topbar .hist-btn:hover{border-color:var(--pink-300);color:var(--ink);}
+
+#shell{display:flex;min-height:calc(100vh - 64px);}
+#sidebar{width:240px;flex:none;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;padding:20px 16px 40px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:4px;background:rgba(255,253,250,.7);}
+#sidebar .nav-btn{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:var(--radius-sm);border:none;background:transparent;font-family:'Be Vietnam Pro',sans-serif;font-size:.875rem;color:var(--ink-soft);cursor:pointer;text-align:left;width:100%;transition:background .15s,color .15s;position:relative;}
+#sidebar .nav-btn:hover{background:var(--cream-deep);color:var(--ink);}
+#sidebar .nav-btn.active{background:var(--pink-50);color:var(--pink-700);font-weight:600;}
+#sidebar .nav-btn .check{width:18px;height:18px;border-radius:50%;background:var(--matcha-500);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex:none;}
+#sidebar .nav-btn .warn-dot{width:7px;height:7px;border-radius:50%;background:#ef5350;flex:none;margin-left:auto;}
+#sidebar .tip-box{margin-top:auto;padding:14px;background:var(--matcha-50);border-radius:var(--radius-sm);border:1px solid var(--matcha-100);font-size:.78rem;color:var(--matcha-700);line-height:1.5;}
+#sidebar .tip-box strong{font-weight:600;display:block;margin-bottom:4px;}
+#sidebar hr{border:none;border-top:1px solid var(--line);margin:8px 0;}
+
+#main{flex:1;padding:30px 26px 90px;overflow:hidden;}
+
+/* ─ Cards ─ */
+.card{background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--line);padding:28px;margin-bottom:20px;}
+.hero-card{background:linear-gradient(135deg,var(--pink-50) 0%,var(--matcha-50) 100%);border:1px solid var(--pink-100);}
+.eyebrow{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:99px;background:var(--pink-100);color:var(--pink-700);margin-bottom:12px;}
+.hero-title{font-family:'Fraunces',serif;font-size:2rem;font-weight:700;line-height:1.2;color:var(--ink);margin-bottom:10px;}
+.hero-desc{color:var(--ink-soft);line-height:1.6;font-size:.95rem;}
+.stat-bar{display:flex;flex-wrap:wrap;gap:20px;margin:20px 0;}
+.stat-item{display:flex;flex-direction:column;gap:2px;}
+.stat-num{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:700;color:var(--ink);}
+.stat-label{font-size:.78rem;color:var(--ink-faint);}
+.guide-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px;}
+.guide-card{background:var(--paper);border-radius:var(--radius-sm);padding:18px;border:1px solid var(--line);text-align:center;}
+.guide-icon{font-size:1.5rem;margin-bottom:8px;}
+.guide-title{font-weight:600;font-size:.9rem;margin-bottom:4px;}
+.guide-desc{font-size:.8rem;color:var(--ink-soft);line-height:1.4;}
+
+/* ─ Chapter header ─ */
+.chapter-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;}
+.ch-badge{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:1.1rem;font-weight:700;color:#fff;flex:none;}
+.ch-title{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700;color:var(--ink);}
+.ch-sub{font-size:.85rem;color:var(--ink-soft);margin-top:2px;}
+
+/* ─ Question cards ─ */
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.q-card{animation:fadeIn .22s ease both;background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--line);padding:24px;margin-bottom:16px;}
+.q-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.q-num{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--ink-faint);font-weight:500;flex:none;margin-top:2px;}
+.q-text{font-size:.95rem;line-height:1.6;color:var(--ink);flex:1;}
+.diff-badge{font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:99px;flex:none;}
+.diff-basic{background:var(--matcha-50);color:var(--matcha-700);}
+.diff-medium{background:#FFF8E1;color:#F57F17;}
+.diff-hard{background:var(--pink-50);color:var(--pink-700);}
+.warn-badge{font-size:.72rem;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--warn-bg);border:1px solid var(--warn-border);color:var(--warn-text);flex:none;}
+.options{display:flex;flex-direction:column;gap:8px;}
+.option-label{display:flex;align-items:flex-start;gap:12px;padding:11px 16px;border-radius:var(--radius-sm);border:1.5px solid var(--line);cursor:pointer;transition:border-color .15s,background .15s;font-size:.9rem;color:var(--ink);line-height:1.4;}
+.option-label:hover:not(.disabled){border-color:var(--pink-300);background:var(--pink-50);}
+.option-label input[type=radio]{display:none;}
+.option-label.selected:not(.correct):not(.wrong){border-color:var(--pink-500);background:var(--pink-50);}
+.option-label.correct{border-color:var(--matcha-500)!important;background:var(--matcha-50)!important;font-weight:600;}
+.option-label.wrong{border-color:var(--pink-600)!important;background:var(--pink-100)!important;}
+.option-label.disabled{cursor:default;}
+.opt-indicator{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;font-size:.65rem;margin-top:2px;transition:background .15s,border-color .15s;}
+.option-label.correct .opt-indicator{background:var(--matcha-500);border-color:var(--matcha-500);color:#fff;}
+.option-label.wrong .opt-indicator{background:var(--pink-600);border-color:var(--pink-600);color:#fff;}
+.option-label.selected:not(.correct):not(.wrong) .opt-indicator{background:var(--pink-500);border-color:var(--pink-500);}
+.explanation{margin-top:14px;padding:14px 16px;border-left:3px solid var(--matcha-500);background:var(--matcha-50);border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:.875rem;color:var(--ink-soft);line-height:1.6;}
+.explanation strong{color:var(--matcha-700);font-weight:600;}
+
+/* ─ Action bar ─ */
+.action-bar{display:flex;gap:12px;margin-top:24px;align-items:center;flex-wrap:wrap;}
+.btn-primary{background:linear-gradient(135deg,var(--pink-500),var(--pink-600));color:#fff;border:none;padding:11px 28px;border-radius:99px;font-family:'Be Vietnam Pro',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;transition:opacity .2s,transform .1s;box-shadow:0 2px 8px rgba(204,103,137,.3);}
+.btn-primary:hover:not(:disabled){opacity:.9;transform:translateY(-1px);}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+.btn-outline{background:transparent;border:1.5px solid var(--line);color:var(--ink-soft);padding:11px 24px;border-radius:99px;font-family:'Be Vietnam Pro',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;transition:border-color .15s,color .15s;}
+.btn-outline:hover{border-color:var(--ink-soft);color:var(--ink);}
+.btn-outline-danger{background:transparent;border:1.5px solid #FFCDD2;color:#C62828;padding:9px 20px;border-radius:99px;font-family:'Be Vietnam Pro',sans-serif;font-size:.875rem;cursor:pointer;transition:border-color .15s;}
+.btn-outline-danger:hover{border-color:#EF9A9A;}
+.btn-start{background:linear-gradient(135deg,var(--matcha-500),var(--matcha-600));color:#fff;border:none;padding:13px 36px;border-radius:99px;font-family:'Be Vietnam Pro',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;transition:opacity .2s,transform .1s;box-shadow:0 2px 12px rgba(138,173,99,.35);}
+.btn-start:hover{opacity:.9;transform:translateY(-1px);}
+
+/* ─ Result card ─ */
+.result-card{background:linear-gradient(135deg,var(--cream-deep),var(--matcha-50));border:1px solid var(--matcha-100);border-radius:var(--radius);padding:32px;text-align:center;margin-bottom:24px;}
+.score-circle{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--pink-500),var(--matcha-500));display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 4px 20px rgba(138,173,99,.3);}
+.score-num{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:700;color:#fff;line-height:1;}
+.score-total{font-size:.75rem;color:rgba(255,255,255,.8);}
+.score-msg{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:600;color:var(--ink);margin-bottom:8px;}
+.score-detail{font-size:.875rem;color:var(--ink-soft);}
+
+/* ─ History panel ─ */
+#hist-overlay{position:fixed;inset:0;background:rgba(59,52,43,.35);z-index:100;display:none;opacity:0;transition:opacity .25s;}
+#hist-overlay.open{display:flex;justify-content:flex-end;}
+#hist-overlay.visible{opacity:1;}
+#hist-panel{width:min(380px,100vw);background:var(--paper);height:100%;overflow-y:auto;box-shadow:-4px 0 32px rgba(59,52,43,.12);padding:0;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);}
+#hist-overlay.visible #hist-panel{transform:translateX(0);}
+.hist-header{padding:22px 24px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--paper);z-index:1;}
+.hist-header h2{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:600;}
+.hist-close{background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--ink-soft);padding:4px;}
+.hist-body{padding:16px 24px 40px;flex:1;}
+.hist-empty{text-align:center;color:var(--ink-faint);padding:40px 0;font-size:.9rem;}
+.hist-entry{padding:14px 0;border-bottom:1px solid var(--line);}
+.hist-entry:last-child{border-bottom:none;}
+.hist-ch{font-weight:600;font-size:.9rem;color:var(--ink);margin-bottom:2px;}
+.hist-date{font-size:.78rem;color:var(--ink-faint);}
+.hist-bar-wrap{height:6px;background:var(--line);border-radius:99px;margin:8px 0 4px;overflow:hidden;}
+.hist-bar{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--matcha-500),var(--pink-500));transition:width .5s ease;}
+.hist-score{font-size:.82rem;color:var(--ink-soft);}
+.hist-badge{display:inline-block;font-size:.7rem;font-weight:600;padding:2px 9px;border-radius:99px;margin-left:8px;}
+.hist-badge-good{background:var(--matcha-50);color:var(--matcha-700);}
+.hist-badge-ok{background:var(--pink-50);color:var(--pink-700);}
+.hist-badge-low{background:var(--warn-bg);color:var(--warn-text);}
+.hist-footer{padding:16px 24px;border-top:1px solid var(--line);}
+
+/* ─ Wrong screen ─ */
+.wrong-group-header{display:flex;align-items:center;gap:10px;margin:28px 0 14px;}
+.wrong-group-badge{font-size:.8rem;font-weight:600;padding:4px 12px;border-radius:99px;color:#fff;}
+.wrong-empty{text-align:center;padding:60px 20px;color:var(--ink-faint);}
+.wrong-empty .big{font-size:2.5rem;margin-bottom:10px;}
+
+/* ─ Mobile nav ─ */
+#mobile-nav{display:none;position:sticky;top:64px;z-index:30;background:rgba(255,253,250,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:8px 16px;overflow-x:auto;gap:8px;scrollbar-width:none;}
+#mobile-nav::-webkit-scrollbar{display:none;}
+#mobile-nav .m-btn{flex:none;padding:7px 14px;border-radius:99px;border:1.5px solid var(--line);background:transparent;font-family:'Be Vietnam Pro',sans-serif;font-size:.8rem;color:var(--ink-soft);cursor:pointer;white-space:nowrap;transition:all .15s;}
+#mobile-nav .m-btn.active{background:var(--pink-50);border-color:var(--pink-300);color:var(--pink-700);font-weight:600;}
+
+@media(max-width:880px){
+  #sidebar{display:none;}
+  #mobile-nav{display:flex;}
+  .guide-grid{grid-template-columns:1fr;}
+  #main{padding:20px 16px 80px;}
+  .hero-title{font-size:1.5rem;}
+}
+
+/* ─ Focus rings ─ */
+:focus-visible{outline:2px solid var(--pink-500);outline-offset:2px;}
+button:focus-visible{outline:2px solid var(--pink-500);outline-offset:2px;}
+`;
+
+// ── Inject CSS ──────────────────────────────────────────────────────────────
+const styleEl = document.createElement('style');
+styleEl.textContent = css;
+document.head.appendChild(styleEl);
+
+// ── Helpers ─────────────────────────────────────────────────────────────────
+const $ = (sel, ctx=document) => ctx.querySelector(sel);
+const $$ = (sel, ctx=document) => [...ctx.querySelectorAll(sel)];
+const el = (tag, cls='', html='') => { const e=document.createElement(tag); if(cls)e.className=cls; if(html)e.innerHTML=html; return e; };
+
+function fmtDate(ts) {
+  const d = new Date(ts);
+  return `${d.getDate()} thg ${d.getMonth()+1}, ${d.getFullYear()} · ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+function diffLabel(d){ return d==='basic'?'Cơ bản':d==='hard'?'Nâng cao':'Trung bình'; }
+function diffClass(d){ return d==='basic'?'diff-basic':d==='hard'?'diff-hard':'diff-medium'; }
+
+// ── Render helpers ───────────────────────────────────────────────────────────
+function renderTopbar() {
+  const tb = el('header',''); tb.id='topbar';
+  const logo = el('a','logo'); logo.href='#'; logo.innerHTML=`Qui<span>zzi</span>`;
+  logo.addEventListener('click', e=>{e.preventDefault(); navigate('home');});
+  const dots = el('div',''); dots.id='progress-dots';
+  const histBtn = el('button','hist-btn'); histBtn.innerHTML='📊 Lịch sử';
+  histBtn.addEventListener('click', openHistory);
+  tb.appendChild(logo); tb.appendChild(dots); tb.appendChild(histBtn);
+  return tb;
+}
+
+function updateProgressDots() {
+  const dotsWrap = $('#progress-dots'); if(!dotsWrap) return;
+  dotsWrap.innerHTML='';
+  const done = LS.chapterDone;
+  DATA.chapters.forEach(ch => {
+    const d = el('div','dot'); d.title=ch.title;
+    if(done[ch.id]) d.classList.add('done');
+    d.addEventListener('click',()=>navigate(ch.id));
+    dotsWrap.appendChild(d);
+  });
+}
+
+function renderSidebar() {
+  const sb = el('nav',''); sb.id='sidebar';
+  // Home btn
+  const homeBtn = el('button','nav-btn'); homeBtn.dataset.nav='home'; homeBtn.innerHTML='🏠 Trang chủ';
+  homeBtn.addEventListener('click',()=>navigate('home'));
+  sb.appendChild(homeBtn);
+  // separator
+  const hr = el('hr'); sb.appendChild(hr);
+  // Chapters
+  const done = LS.chapterDone;
+  const wrongCount = LS.wrongCount;
+  DATA.chapters.forEach((ch,i) => {
+    const btn = el('button','nav-btn'); btn.dataset.nav=ch.id;
+    const hasMultiWrong = ch.questions.some(q => (wrongCount[q.id]||0)>=2);
+    const checkSpan = done[ch.id] ? `<span class="check">✓</span>` : '';
+    const warnDot = hasMultiWrong ? `<span class="warn-dot" title="Có câu sai ≥2 lần"></span>` : '';
+    btn.innerHTML=`<span style="color:var(--ink-faint);font-family:'JetBrains Mono',monospace;font-size:.75rem;flex:none;">${String(i+1).padStart(2,'0')}</span><span style="flex:1;line-height:1.35;">${ch.title}</span>${checkSpan}${warnDot}`;
+    btn.addEventListener('click',()=>navigate(ch.id));
+    sb.appendChild(btn);
+  });
+  // separator
+  sb.appendChild(el('hr'));
+  // Wrong btn
+  const wrongBtn = el('button','nav-btn'); wrongBtn.dataset.nav='wrong';
+  wrongBtn.innerHTML='📌 Câu sai của tôi';
+  wrongBtn.addEventListener('click',()=>navigate('wrong'));
+  sb.appendChild(wrongBtn);
+  // Tip box
+  const tip = el('div','tip-box');
+  tip.innerHTML='<strong>💡 Mẹo ôn thi</strong>Làm lại các câu sai nhiều lần để ghi nhớ lâu hơn.';
+  sb.appendChild(tip);
+  return sb;
+}
+
+function renderMobileNav() {
+  const mn = el('div',''); mn.id='mobile-nav';
+  const homeBtn = el('button','m-btn'); homeBtn.dataset.mnav='home'; homeBtn.textContent='🏠 Trang chủ';
+  homeBtn.addEventListener('click',()=>navigate('home'));
+  mn.appendChild(homeBtn);
+  DATA.chapters.forEach((ch,i)=>{
+    const btn = el('button','m-btn'); btn.dataset.mnav=ch.id;
+    btn.textContent=`${i+1}. ${ch.title.length>16?ch.title.slice(0,16)+'…':ch.title}`;
+    btn.addEventListener('click',()=>navigate(ch.id));
+    mn.appendChild(btn);
+  });
+  const wrongBtn = el('button','m-btn'); wrongBtn.dataset.mnav='wrong';
+  wrongBtn.textContent='📌 Câu sai';
+  wrongBtn.addEventListener('click',()=>navigate('wrong'));
+  mn.appendChild(wrongBtn);
+  return mn;
+}
+
+function updateNavActive(view) {
+  $$('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.nav===view));
+  $$('.m-btn').forEach(b=>b.classList.toggle('active', b.dataset.mnav===view));
+}
+
+// ── Home screen ──────────────────────────────────────────────────────────────
+function renderHome() {
+  const main = el('main',''); main.id='main';
+  const totalQ = DATA.chapters.reduce((s,c)=>s+c.questions.length,0);
+  // Hero
+  const hero = el('div','card hero-card');
+  hero.innerHTML=`
+    <span class="eyebrow">📚 Trắc nghiệm</span>
+    <h1 class="hero-title">${DATA.meta.title}</h1>
+    <p class="hero-desc">${DATA.meta.description}</p>
+    <div class="stat-bar">
+      <div class="stat-item"><div class="stat-num">${totalQ}</div><div class="stat-label">Tổng câu hỏi</div></div>
+      <div class="stat-item"><div class="stat-num">${DATA.meta.total_time_minutes} phút</div><div class="stat-label">Thời gian thi</div></div>
+      <div class="stat-item"><div class="stat-num">${DATA.chapters.length}</div><div class="stat-label">Chương</div></div>
+      <div class="stat-item"><div class="stat-num">${totalQ}</div><div class="stat-label">Câu quiz</div></div>
+    </div>
+    <div style="margin-top:16px;">
+      <button class="btn-start" id="start-btn">Bắt đầu ôn tập →</button>
+    </div>`;
+  main.appendChild(hero);
+  // Guide grid
+  const guides = [
+    {icon:'📖',title:'Học theo chương',desc:'Câu hỏi được chia theo từng chủ đề, ôn từng phần dễ theo dõi tiến độ.'},
+    {icon:'✏️',title:'Ôn ngay sau khi đọc',desc:'Làm quiz ngay khi vừa học xong để ghi nhớ sâu hơn.'},
+    {icon:'💡',title:'Xem giải thích',desc:'Mỗi câu đều có giải thích chi tiết để hiểu bản chất, không chỉ học vẹt.'},
+  ];
+  const gg = el('div','guide-grid');
+  guides.forEach(g=>{
+    const c = el('div','guide-card');
+    c.innerHTML=`<div class="guide-icon">${g.icon}</div><div class="guide-title">${g.title}</div><div class="guide-desc">${g.desc}</div>`;
+    gg.appendChild(c);
+  });
+  main.appendChild(gg);
+  setTimeout(()=>{
+    const sb = $('#start-btn',main);
+    if(sb) sb.addEventListener('click',()=>navigate(DATA.chapters[0].id));
+  },0);
+  return main;
+}
+
+// ── Quiz screen ──────────────────────────────────────────────────────────────
+function renderChapter(chId) {
+  const ch = DATA.chapters.find(c=>c.id===chId);
+  if(!ch) return renderHome();
+  const main = el('main',''); main.id='main';
+  const wrongCount = LS.wrongCount;
+  // Chapter header
+  const chIdx = DATA.chapters.indexOf(ch);
+  const header = el('div','chapter-header');
+  const badge = el('div','ch-badge'); badge.style.background=ch.color; badge.textContent=String(chIdx+1).padStart(2,'0');
+  const info = el('div');
+  info.innerHTML=`<div class="ch-title">${ch.title}</div><div class="ch-sub">${ch.questions.length} câu hỏi</div>`;
+  header.appendChild(badge); header.appendChild(info);
+  main.appendChild(header);
+  // Render questions
+  const selections = {}; // qId -> selected index
+  const qCards = {};
+  ch.questions.forEach((q,qi)=>{
+    const card = el('div','q-card'); card.id=`qcard-${q.id}`;
+    qCards[q.id] = card;
+    const isMultiWrong = (wrongCount[q.id]||0)>=2;
+    const diffB = el('span',`diff-badge ${diffClass(q.difficulty)}`); diffB.textContent=diffLabel(q.difficulty);
+    const hdrDiv = el('div','q-header');
+    const numSpan = el('span','q-num'); numSpan.textContent=String(qi+1).padStart(2,'0')+'.';
+    const textSpan = el('span','q-text'); textSpan.textContent=q.question;
+    hdrDiv.appendChild(numSpan); hdrDiv.appendChild(textSpan); hdrDiv.appendChild(diffB);
+    if(isMultiWrong){ const wb=el('span','warn-badge'); wb.textContent='⚠️ Ôn lại ngay!'; hdrDiv.appendChild(wb); }
+    card.appendChild(hdrDiv);
+    // Options
+    const optDiv = el('div','options'); optDiv.id=`opts-${q.id}`;
+    q.options.forEach((opt,oi)=>{
+      const lbl = el('label','option-label');
+      lbl.htmlFor=`opt-${q.id}-${oi}`;
+      const radio = el('input'); radio.type='radio'; radio.name=`q-${q.id}`; radio.id=`opt-${q.id}-${oi}`; radio.value=oi;
+      const indic = el('span','opt-indicator'); indic.id=`indic-${q.id}-${oi}`;
+      const txtSpan = el('span'); txtSpan.textContent=opt;
+      lbl.appendChild(radio); lbl.appendChild(indic); lbl.appendChild(txtSpan);
+      lbl.addEventListener('click',()=>{
+        if(lbl.classList.contains('disabled')) return;
+        $$(`label[for^="opt-${q.id}-"]`).forEach(l=>{l.classList.remove('selected');});
+        lbl.classList.add('selected');
+        selections[q.id]=oi;
+        updateSubmitBtn();
+      });
+      optDiv.appendChild(lbl);
+    });
+    card.appendChild(optDiv);
+    main.appendChild(card);
+  });
+  // Action bar
+  const actionBar = el('div','action-bar');
+  const submitBtn = el('button','btn-primary'); submitBtn.id='submit-btn'; submitBtn.textContent='Nộp bài';
+  submitBtn.disabled=true;
+  const retryBtn = el('button','btn-outline'); retryBtn.id='retry-btn'; retryBtn.textContent='🔄 Làm lại'; retryBtn.style.display='none';
+  actionBar.appendChild(submitBtn); actionBar.appendChild(retryBtn);
+  main.appendChild(actionBar);
+  function updateSubmitBtn(){
+    const answered = ch.questions.filter(q=>selections[q.id]!==undefined).length;
+    submitBtn.disabled = answered < ch.questions.length;
+  }
+  submitBtn.addEventListener('click',()=>{
+    submitChapter(ch, selections, qCards, submitBtn, retryBtn, actionBar, main);
+  });
+  retryBtn.addEventListener('click',()=>{
+    navigate(chId);
+  });
+  return main;
+}
+
+function submitChapter(ch, selections, qCards, submitBtn, retryBtn, actionBar, main) {
+  const wrongCount = LS.wrongCount;
+  let correct = 0;
+  const wrongIds = [];
+  ch.questions.forEach(q=>{
+    const sel = selections[q.id];
+    const isCorrect = sel === q.answer;
+    if(isCorrect) correct++;
+    else {
+      wrongIds.push(q.id);
+      wrongCount[q.id] = (wrongCount[q.id]||0)+1;
+    }
+    // Color options
+    const optDiv = document.getElementById(`opts-${q.id}`);
+    const labels = $$('label', optDiv);
+    labels.forEach((lbl,oi)=>{
+      lbl.classList.add('disabled');
+      const radio = lbl.querySelector('input');
+      if(radio) radio.disabled=true;
+      const indic = lbl.querySelector('.opt-indicator');
+      if(oi===q.answer){
+        lbl.classList.add('correct');
+        if(indic) indic.textContent='✓';
+      } else if(oi===sel && !isCorrect){
+        lbl.classList.add('wrong');
+        if(indic) indic.textContent='✗';
+      }
+    });
+    // Explanation
+    const expDiv = el('div','explanation');
+    expDiv.innerHTML=`<strong>Giải thích:</strong> ${q.explanation}`;
+    qCards[q.id].appendChild(expDiv);
+  });
+  LS.wrongCount = wrongCount;
+  // Mark chapter done
+  const done = LS.chapterDone;
+  done[ch.id] = true;
+  LS.chapterDone = done;
+  updateProgressDots();
+  updateSidebar();
+  // Save history
+  const hist = LS.history;
+  hist.unshift({chapterId:ch.id, chapterTitle:ch.title, score:correct, total:ch.questions.length, timestamp:Date.now(), wrongIds});
+  if(hist.length>50) hist.splice(50);
+  LS.history = hist;
+  // Show result card
+  const pct = correct/ch.questions.length;
+  const msg = pct>=.9?'Xuất sắc 🌟':pct>=.7?'Khá tốt 👍':pct>=.5?'Ôn thêm phần ⚠️':'Cần ôn lại kỹ hơn 📖';
+  const rc = el('div','result-card');
+  let scoreColor = pct>=.7?'linear-gradient(135deg,var(--matcha-500),var(--matcha-600))':pct>=.5?'linear-gradient(135deg,var(--warn-border),#ff8f00)':'linear-gradient(135deg,var(--pink-500),var(--pink-700))';
+  rc.innerHTML=`
+    <div class="score-circle" style="background:${scoreColor};">
+      <div class="score-num">${correct}</div>
+      <div class="score-total">/ ${ch.questions.length}</div>
+    </div>
+    <div class="score-msg">${msg}</div>
+    <div class="score-detail">${wrongIds.length>0?`<span style="color:var(--pink-600);">${wrongIds.length} câu sai</span> — `:''}Bạn trả lời đúng ${correct}/${ch.questions.length} câu.</div>
+    ${wrongIds.length>0?`<div style="margin-top:12px;"><button class="btn-outline" id="scroll-wrong-btn">👁 Xem câu sai</button></div>`:''}`;
+  actionBar.parentNode.insertBefore(rc, actionBar);
+  submitBtn.style.display='none';
+  retryBtn.style.display='inline-block';
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(()=>{
+    const scrollWrongBtn = document.getElementById('scroll-wrong-btn');
+    if(scrollWrongBtn && wrongIds.length>0){
+      scrollWrongBtn.addEventListener('click',()=>{
+        const firstWrongCard = document.getElementById(`qcard-${wrongIds[0]}`);
+        if(firstWrongCard) firstWrongCard.scrollIntoView({behavior:'smooth',block:'start'});
+      });
+    }
+  },0);
+}
+
+// ── Wrong screen ─────────────────────────────────────────────────────────────
+function renderWrongScreen() {
+  const main = el('main',''); main.id='main';
+  const wrongCount = LS.wrongCount;
+  const wrongQs = {};
+  DATA.chapters.forEach(ch=>{
+    const wqs = ch.questions.filter(q=>(wrongCount[q.id]||0)>=1);
+    if(wqs.length>0) wrongQs[ch.id]={chapter:ch, questions:wqs};
+  });
+  const header = el('div','chapter-header');
+  header.innerHTML=`<div style="font-size:1.5rem;">📌</div><div><div class="ch-title">Câu sai của tôi</div><div class="ch-sub">Các câu bạn đã từng trả lời sai</div></div>`;
+  main.appendChild(header);
+  const total = Object.values(wrongQs).reduce((s,g)=>s+g.questions.length,0);
+  if(total===0){
+    const empty = el('div','wrong-empty');
+    empty.innerHTML=`<div class="big">🎉</div><div>Bạn chưa có câu sai nào!<br><span style="font-size:.85rem;">Hãy bắt đầu ôn luyện để xem kết quả.</span></div>`;
+    main.appendChild(empty);
+    return main;
+  }
+  const selections = {};
+  const qCards = {};
+  Object.values(wrongQs).forEach(({chapter:ch, questions:qs})=>{
+    const gh = el('div','wrong-group-header');
+    const gbadge = el('span','wrong-group-badge'); gbadge.style.background=ch.color; gbadge.textContent=ch.title;
+    const gcount = el('span',''); gcount.style.cssText='font-size:.8rem;color:var(--ink-faint);'; gcount.textContent=` ${qs.length} câu`;
+    gh.appendChild(gbadge); gh.appendChild(gcount);
+    main.appendChild(gh);
+    qs.forEach((q,qi)=>{
+      const card = el('div','q-card'); card.id=`wqcard-${q.id}`;
+      qCards[q.id]=card;
+      const wc = wrongCount[q.id]||0;
+      const isMultiWrong = wc>=2;
+      const hdrDiv = el('div','q-header');
+      const numSpan = el('span','q-num'); numSpan.textContent=String(qi+1).padStart(2,'0')+'.';
+      const textSpan = el('span','q-text'); textSpan.textContent=q.question;
+      const diffB = el('span',`diff-badge ${diffClass(q.difficulty)}`); diffB.textContent=diffLabel(q.difficulty);
+      hdrDiv.appendChild(numSpan); hdrDiv.appendChild(textSpan); hdrDiv.appendChild(diffB);
+      if(isMultiWrong){ const wb=el('span','warn-badge'); wb.textContent=`⚠️ Sai ${wc} lần`; hdrDiv.appendChild(wb); }
+      card.appendChild(hdrDiv);
+      const optDiv = el('div','options'); optDiv.id=`wopts-${q.id}`;
+      q.options.forEach((opt,oi)=>{
+        const lbl = el('label','option-label');
+        lbl.htmlFor=`wopt-${q.id}-${oi}`;
+        const radio = el('input'); radio.type='radio'; radio.name=`wq-${q.id}`; radio.id=`wopt-${q.id}-${oi}`; radio.value=oi;
+        const indic = el('span','opt-indicator');
+        const txtSpan = el('span'); txtSpan.textContent=opt;
+        lbl.appendChild(radio); lbl.appendChild(indic); lbl.appendChild(txtSpan);
+        lbl.addEventListener('click',()=>{
+          if(lbl.classList.contains('disabled')) return;
+          $$(`label[for^="wopt-${q.id}-"]`).forEach(l=>l.classList.remove('selected'));
+          lbl.classList.add('selected');
+          selections[q.id]=oi;
+        });
+        optDiv.appendChild(lbl);
+      });
+      card.appendChild(optDiv);
+      main.appendChild(card);
+    });
+  });
+  // Action bar
+  const actionBar = el('div','action-bar');
+  const submitWrongBtn = el('button','btn-primary'); submitWrongBtn.textContent='Nộp câu sai';
+  actionBar.appendChild(submitWrongBtn);
+  const clearBtn = el('button','btn-outline-danger'); clearBtn.style.marginLeft='auto'; clearBtn.textContent='🗑 Xóa lịch sử câu sai';
+  clearBtn.addEventListener('click',()=>{
+    if(confirm('Xóa toàn bộ lịch sử câu sai? Hành động này không thể hoàn tác.')) {
+      LS.wrongCount={};
+      navigate('wrong');
+    }
+  });
+  actionBar.appendChild(clearBtn);
+  main.appendChild(actionBar);
+  submitWrongBtn.addEventListener('click',()=>{
+    const newWrongCount = LS.wrongCount;
+    Object.values(wrongQs).forEach(({questions:qs})=>{
+      qs.forEach(q=>{
+        const sel = selections[q.id];
+        if(sel===undefined) return;
+        const isCorrect = sel===q.answer;
+        if(!isCorrect) newWrongCount[q.id]=(newWrongCount[q.id]||0)+1;
+        // Color options
+        const optDiv = document.getElementById(`wopts-${q.id}`);
+        if(!optDiv) return;
+        const labels = $$('label', optDiv);
+        labels.forEach((lbl,oi)=>{
+          lbl.classList.add('disabled');
+          const radio = lbl.querySelector('input'); if(radio) radio.disabled=true;
+          const indic = lbl.querySelector('.opt-indicator');
+          if(oi===q.answer){ lbl.classList.add('correct'); if(indic) indic.textContent='✓'; }
+          else if(oi===sel && !isCorrect){ lbl.classList.add('wrong'); if(indic) indic.textContent='✗'; }
+        });
+        const expDiv = el('div','explanation');
+        expDiv.innerHTML=`<strong>Giải thích:</strong> ${q.explanation}`;
+        qCards[q.id].appendChild(expDiv);
+      });
+    });
+    LS.wrongCount=newWrongCount;
+    submitWrongBtn.style.display='none';
+    updateSidebar();
+    const wrongAnswered = Object.values(wrongQs).flatMap(g=>g.questions).filter(q=>selections[q.id]!==undefined);
+    const correctNow = wrongAnswered.filter(q=>selections[q.id]===q.answer).length;
+    const rc = el('div','result-card');
+    rc.style.marginTop='24px';
+    rc.innerHTML=`<div class="score-msg">Kết quả ôn tập câu sai</div><div class="score-detail">Đúng ${correctNow}/${wrongAnswered.length} câu đã nộp.</div>`;
+    actionBar.parentNode.insertBefore(rc, actionBar);
+    clearBtn.style.display='inline-block';
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+  return main;
+}
+
+// ── History panel ────────────────────────────────────────────────────────────
+function openHistory() {
+  const overlay = document.getElementById('hist-overlay');
+  overlay.style.display='flex';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>overlay.classList.add('visible')));
+}
+function closeHistory() {
+  const overlay = document.getElementById('hist-overlay');
+  overlay.classList.remove('visible');
+  setTimeout(()=>{ overlay.style.display='none'; }, 300);
+}
+function buildHistPanel() {
+  const overlay = el('div',''); overlay.id='hist-overlay';
+  overlay.addEventListener('click',(e)=>{ if(e.target===overlay) closeHistory(); });
+  const panel = el('div',''); panel.id='hist-panel';
+  const histHeader = el('div','hist-header');
+  histHeader.innerHTML=`<h2>📊 Lịch sử làm bài</h2><button class="hist-close" aria-label="Đóng">✕</button>`;
+  histHeader.querySelector('.hist-close').addEventListener('click', closeHistory);
+  panel.appendChild(histHeader);
+  const body = el('div','hist-body'); body.id='hist-body';
+  const footer = el('div','hist-footer');
+  const clearHistBtn = el('button','btn-outline-danger'); clearHistBtn.textContent='🗑 Xóa toàn bộ lịch sử';
+  clearHistBtn.addEventListener('click',()=>{
+    if(confirm('Xóa toàn bộ lịch sử? Hành động này không thể hoàn tác.')){
+      LS.history=[]; renderHistBody(body);
+    }
+  });
+  footer.appendChild(clearHistBtn);
+  panel.appendChild(body); panel.appendChild(footer);
+  overlay.appendChild(panel);
+  renderHistBody(body);
+  return overlay;
+}
+function renderHistBody(body) {
+  body.innerHTML='';
+  const hist = LS.history;
+  if(hist.length===0){
+    body.innerHTML='<div class="hist-empty">Chưa có lịch sử làm bài.</div>'; return;
+  }
+  hist.forEach(h=>{
+    const pct = h.score/h.total;
+    const badgeClass = pct>=.7?'hist-badge-good':pct>=.5?'hist-badge-ok':'hist-badge-low';
+    const badgeLabel = pct>=.9?'Xuất sắc':pct>=.7?'Khá tốt':pct>=.5?'Trung bình':'Cần cải thiện';
+    const entry = el('div','hist-entry');
+    entry.innerHTML=`
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+        <div class="hist-ch">${h.chapterTitle}</div>
+        <span class="hist-badge ${badgeClass}">${badgeLabel}</span>
+      </div>
+      <div class="hist-date">${fmtDate(h.timestamp)}</div>
+      <div class="hist-bar-wrap"><div class="hist-bar" style="width:${Math.round(pct*100)}%"></div></div>
+      <div class="hist-score">${h.score}/${h.total} câu đúng</div>`;
+    body.appendChild(entry);
+  });
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function navigate(view) {
+  window.location.hash = '#'+view;
+}
+
+function renderView(view) {
+  const shell = document.getElementById('shell');
+  const oldMain = document.getElementById('main');
+  if(oldMain) oldMain.remove();
+  let newMain;
+  if(view==='home' || !view) newMain = renderHome();
+  else if(view==='wrong') newMain = renderWrongScreen();
+  else {
+    const ch = DATA.chapters.find(c=>c.id===view);
+    newMain = ch ? renderChapter(view) : renderHome();
+  }
+  shell.appendChild(newMain);
+  updateNavActive(view||'home');
+  window.scrollTo({top:0,behavior:'instant'});
+}
+
+function updateSidebar() {
+  const sb = document.getElementById('sidebar');
+  const mn = document.getElementById('mobile-nav');
+  const newSb = renderSidebar();
+  const newMn = renderMobileNav();
+  if(sb) sb.replaceWith(newSb);
+  if(mn) mn.replaceWith(newMn);
+  updateNavActive(window.location.hash.slice(1)||'home');
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+async function boot() {
+  const app = document.getElementById('app');
+  // Inline data — works with file:// without a server
+  const INLINE_DATA = {"meta":{"title":"Quản trị Dữ liệu Tài chính","description":"Ôn tập trắc nghiệm môn Quản trị Dữ liệu & Tài chính","total_time_minutes":60},"chapters":[{"id":"ch1","title":"Giới thiệu STATA & Quản lý dữ liệu","color":"#8AAD63","questions":[{"id":"ch1-q1","difficulty":"medium","question":"Tên biến có thể có độ dài tối đa là bao nhiêu ký tự?","options":["16 ký tự.","32 ký tự.","64 ký tự.","128 ký tự."],"answer":1,"explanation":"Đáp án đúng: 32 ký tự."},{"id":"ch1-q2","difficulty":"medium","question":"Tên biến bao gồm những gì?","options":["Chữ cái, số, và dấu gạch dưới (_).","Chữ cái, số, và ký tự đặc biệt.","Chữ cái và ký tự đặc biệt.","Chữ cái, số, và khoảng trắng."],"answer":0,"explanation":"Đáp án đúng: Chữ cái, số, và dấu gạch dưới (_)."},{"id":"ch1-q3","difficulty":"medium","question":"Khi nào Stata sẽ không thực hiện câu lệnh trong do-file?","options":["Khi câu lệnh bắt đầu bằng ký tự *","Khi câu lệnh bắt đầu bằng ký tự #","Khi câu lệnh nằm giữa hai nhóm ký tự //","Khi câu lệnh bắt đầu bằng ký tự /"],"answer":0,"explanation":"Đáp án đúng: Khi câu lệnh bắt đầu bằng ký tự *"},{"id":"ch1-q4","difficulty":"medium","question":"Nếu muốn tạo tệp log có tên chứa kí tự trắng, ví dụ \"bai tap1\". Phương án nào sau đây là đúng:","options":["log using bai tap1","log using 'bai tap1'","log using \"bai tap1\"","Không thể tạo tệp log với tên chứa kí tự trắng"],"answer":2,"explanation":"Đáp án đúng: log using \"bai tap1\""},{"id":"ch1-q5","difficulty":"medium","question":"Trong số các tên biến sau, tên nào là hợp lệ?","options":["_macongty1.","1macongty.","macongty-1.","macongty@1."],"answer":0,"explanation":"Đáp án đúng: _macongty1."},{"id":"ch1-q6","difficulty":"medium","question":"Biến rời rạc thường được lưu trữ dưới dạng nào?","options":["Float và double.","Byte, int, và long.","Str và char.","Decimal và binary."],"answer":1,"explanation":"Đáp án đúng: Byte, int, và long."},{"id":"ch1-q7","difficulty":"medium","question":"Để mở xem tệp log file trong Stata, có thể sử dụng menu nào?","options":["File > View","Edit > Log > View","Data > Log > View","File > Log > Translate"],"answer":0,"explanation":"Đáp án đúng: File > View"},{"id":"ch1-q8","difficulty":"medium","question":"Chọn phương án sai:","options":["Đối với tên biến, Stata phân biệt chữ viết thường với chữ viết hoa","Các câu lệnh Stata có thể viết bằng chữ thường hoặc chữ hoa","Các tùy chọn được ký hiệu trong dấu ngoặc vuông [ ].","Một số lệnh Stata cho phép viết tắt."],"answer":1,"explanation":"Đáp án đúng: Các câu lệnh Stata có thể viết bằng chữ thường hoặc chữ hoa"},{"id":"ch1-q9","difficulty":"medium","question":"Cách nào sau đây KHÔNG phải là cách thoát khỏi chương trình STATA?","options":["Thực hiện menu: File > Exit.","Thực hiện lệnh từ cửa sổ Command: Exit.","Thực hiện đóng cửa sổ chương trình STATA.","Thực hiện menu: File > Close."],"answer":3,"explanation":"Đáp án đúng: Thực hiện menu: File > Close."},{"id":"ch1-q10","difficulty":"medium","question":"Cách nào sau đây KHÔNG phải là cách xem dữ liệu trong tệp data của STATA?","options":["Ấn vào biểu tượng Data editor (Edit).","Chọn Data -> Data editor -> Data editor (Browse) từ thanh Menu.","Chọn File -> Open từ thanh Menu.","Gõ lệnh Edit ở cửa sổ lệnh."],"answer":2,"explanation":"Đáp án đúng: Chọn File -> Open từ thanh Menu."},{"id":"ch1-q11","difficulty":"medium","question":"Sử dụng lệnh: log using vidu, text điều gì sẽ xảy ra?","options":["Tạo tệp log với tên vidu.smcl","Tạo tệp log với tên vidu.log dưới dạng văn bản","Tạo tệp log với tên vidu.txt dưới dạng văn bản","Không tạo tệp log vì thiếu tùy chọn replace"],"answer":1,"explanation":"Đáp án đúng: Tạo tệp log với tên vidu.log dưới dạng văn bản"},{"id":"ch1-q12","difficulty":"medium","question":"Khi chạy do-file mà không muốn STATA dừng lại khi gặp lỗi, cần sử dụng lệnh nào sau đây?","options":["do file_name","run file_name","do file_name, nostop","run file_name, stop"],"answer":2,"explanation":"Đáp án đúng: do file_name, nostop"},{"id":"ch1-q13","difficulty":"medium","question":"Các thuộc tính của đối tượng nghiên cứu trong một bảng số liệu được gọi là gì?","options":["Biến.","Dòng.","Quan sát.","Bản ghi."],"answer":0,"explanation":"Đáp án đúng: Biến."},{"id":"ch1-q14","difficulty":"medium","question":"Để chuyển đổi tệp \"vidu.smcl\" sang định dạng text và ghi đè lên tệp \"vidu.txt\" đã có sẵn, sử dụng lệnh nào?","options":["translate vidu.smcl vidu.txt","translate vidu.txt vidu.smcl","translate vidu.smcl vidu.txt, replace","translate vidu.txt vidu.smcl, replace"],"answer":2,"explanation":"Đáp án đúng: translate vidu.smcl vidu.txt, replace"}]},{"id":"ch2","title":"Khai thác dữ liệu & Phân tích","color":"#E186A4","questions":[{"id":"ch2-q1","difficulty":"medium","question":"Alibaba sử dụng kỹ thuật nào để xác định hành vi gian lận của người bán và khách hàng?","options":["Hồ sơ (Profiling)","Đối sánh tương đồng (Similarity matching)","Phân cụm (Clustering)","Nhóm đồng xuất hiện (Co-occurrence grouping)"],"answer":1,"explanation":"Đáp án đúng: Đối sánh tương đồng (Similarity matching)"},{"id":"ch2-q2","difficulty":"medium","question":"Biến dùng để nhận dạng quan sát trong một bảng số liệu được gọi là gì?","options":["Biến định lượng.","Biến định tính.","Biến xác định.","Biến phân loại."],"answer":2,"explanation":"Đáp án đúng: Biến xác định."},{"id":"ch2-q3","difficulty":"medium","question":"Cửa sổ History trong STATA có chức năng gì?","options":["Hiển thị các biến mà người dùng đưa vào.","Hiển thị danh sách các lệnh mới thực hiện gần nhất.","Hiển thị kết quả thực hiện các lệnh.","Cung cấp thông tin về tệp dữ liệu hiện tại."],"answer":1,"explanation":"Đáp án đúng: Hiển thị danh sách các lệnh mới thực hiện gần nhất."},{"id":"ch2-q4","difficulty":"medium","question":"Phương pháp khai thác dữ liệu nào được coi là bước đầu tiên trong phân tích dữ liệu của hầu hết các công ty?","options":["Phân tích chẩn đoán","Phân tích mô tả","Phân tích dự đoán","Phân tích khám phá"],"answer":1,"explanation":"Đáp án đúng: Phân tích mô tả"},{"id":"ch2-q5","difficulty":"medium","question":"Kỹ thuật phân tích chẩn đoán nào có thể được sử dụng để nhóm các đối tượng có đặc điểm tương đồng trong cùng một tập dữ liệu","options":["Phân cụm (Clustering)","Đối sánh tương đồng (Similarity matching)","Hồ sơ (Profiling)","Nhóm đồng xuất hiện (Co-occurrence grouping)"],"answer":0,"explanation":"Đáp án đúng: Phân cụm (Clustering)"},{"id":"ch2-q6","difficulty":"medium","question":"Ba giai đoạn trong chu kỳ mối quan hệ khách hàng là gì?","options":["Tìm kiếm khách hàng, chăm sóc khách hàng, duy trì khách hàng","Tìm kiếm khách hàng, phát triển sản phẩm, chăm sóc khách hàng","Chăm sóc khách hàng, duy trì khách hàng, mở rộng thị trường","Tìm kiếm khách hàng, phát triển sản phẩm, mở rộng thị trường"],"answer":0,"explanation":"Đáp án đúng: Tìm kiếm khách hàng, chăm sóc khách hàng, duy trì khách hàng"},{"id":"ch2-q7","difficulty":"medium","question":"Lệnh doedit trong STATA có chức năng gì?","options":["Mở tệp dữ liệu.","Mở cửa sổ Results.","Mở cửa sổ do-file editor.","Chạy lệnh đã lưu trong do-file."],"answer":2,"explanation":"Đáp án đúng: Mở cửa sổ do-file editor."},{"id":"ch2-q8","difficulty":"medium","question":"Công cụ phân tích dữ liệu nào trong Excel được sử dụng để thực hiện các phép tính thống kê phức tạp như hồi quy, ANOVA, và kiểm định giả thuyết?","options":["Solver","PivotTable","Data Analysis Toolpak","Conditional Formatting"],"answer":2,"explanation":"Đáp án đúng: Data Analysis Toolpak"},{"id":"ch2-q9","difficulty":"medium","question":"Bước \"Triển khai giải pháp\" (Deployment) trong quy trình khai thác dữ liệu mang ý nghĩa thực tiễn nào đối với một ngân hàng?","options":["Chạy thử nghiệm mô hình trên một tập dữ liệu mới để xem độ chính xác đạt bao nhiêu phần trăm","Báo cáo kết quả phân tích bằng biểu đồ cho Giám đốc tài chính","Tích hợp thuật toán đã được phê duyệt vào hệ thống phần mềm lõi (Core banking) để tự động ra quyết định phê duyệt tín dụng","Thu thập thêm dữ liệu từ các mạng xã hội để chuẩn bị cho chu kỳ phân tích tiếp theo"],"answer":2,"explanation":"Đáp án đúng: Tích hợp thuật toán đã được phê duyệt vào hệ thống phần mềm lõi (Core banking) để tự động ra quyết định phê duyệt tín dụng"},{"id":"ch2-q10","difficulty":"medium","question":"Bước \"Triển khai giải pháp\" trong quy trình tiêu chuẩn cho khai thác dữ liệu trong nhiều lĩnh vực bao gồm hoạt động nào?","options":["Thử nghiệm mô hình với dữ liệu mới.","Phát triển thêm các giải pháp thay thế.","Thực hiện mô hình đã chọn vào quy trình kinh doanh thực tế.","Đánh giá dữ liệu từ nguồn bên ngoài."],"answer":2,"explanation":"Đáp án đúng: Thực hiện mô hình đã chọn vào quy trình kinh doanh thực tế."},{"id":"ch2-q11","difficulty":"medium","question":"Trong bước \"Hiểu về dữ liệu\" của quy trình tiêu chuẩn cho khai thác dữ liệu trong nhiều lĩnh vực, nhóm IT cần làm gì?","options":["Xác định và xây dựng các mô hình dữ liệu sơ bộ","Xác định và đánh giá dữ liệu cần thiết cho dự án.","Chuẩn hóa dữ liệu để đưa vào mô hình","Tối ưu hóa chi phí vận hành, khai thác dữ liệu"],"answer":1,"explanation":"Đáp án đúng: Xác định và đánh giá dữ liệu cần thiết cho dự án."},{"id":"ch2-q12","difficulty":"medium","question":"Trong phương pháp phân tích mô tả, kỹ thuật \"thống kê tóm tắt\" thường bao gồm những yếu tố nào?","options":["Doanh thu, chi phí và lợi nhuận","Vị trí, phạm vi, hình dạng và kích thước của dữ liệu.","Nguyên nhân và hệ quả của biến động","Dự đoán sự thay đổi của thị trường, xu hướng tương lai"],"answer":1,"explanation":"Đáp án đúng: Vị trí, phạm vi, hình dạng và kích thước của dữ liệu."},{"id":"ch2-q13","difficulty":"medium","question":"Giám đốc yêu cầu bạn làm một báo cáo \"Thống kê tóm tắt\" (Summary Statistics) thuộc nhóm Phân tích mô tả cho doanh thu năm qua. Yếu tố nào sau đây KHÔNG ĐƯỢC PHÉP xuất hiện trong báo cáo này?","options":["Độ lệch chuẩn cho thấy sự biến động doanh thu giữa các tháng","Doanh thu trung bình và trung vị của toàn công ty","Dự báo xác suất sụt giảm doanh thu trong quý 1 năm sau dựa trên xu hướng hiện tại","Biểu đồ phân phối hình chuông cho thấy hình dáng của dữ liệu doanh thu."],"answer":2,"explanation":"Đáp án đúng: Dự báo xác suất sụt giảm doanh thu trong quý 1 năm sau dựa trên xu hướng hiện tại"},{"id":"ch2-q14","difficulty":"medium","question":"Trong quy trình chuẩn CRISP-DM, sự khác biệt cốt lõi giữa bước \"Hiểu về dữ liệu\" (Data Understanding) và \"Chuẩn bị dữ liệu\" (Data Preparation) là gì?","options":["\"Hiểu về dữ liệu\" là việc làm sạch dữ liệu, còn \"Chuẩn bị dữ liệu\" là đưa dữ liệu vào mô hình học máy","\"Hiểu về dữ liệu\" là đánh giá tính khả thi và chất lượng của dữ liệu thô, trong khi \"Chuẩn bị dữ liệu\" là trực tiếp biến đổi, làm sạch và định dạng lại dữ liệu đó","\"Hiểu về dữ liệu\" do Ban giám đốc thực hiện, còn \"Chuẩn bị dữ liệu\" do bộ phận IT thực hiện","Tiêu chuẩn dữ liệu do khách hàng đưa ra."],"answer":1,"explanation":"Đáp án đúng: \"Hiểu về dữ liệu\" là đánh giá tính khả thi và chất lượng của dữ liệu thô, trong khi \"Chuẩn bị dữ liệu\" là trực tiếp biến đổi, làm sạch và định dạng lại dữ liệu đó"},{"id":"ch2-q15","difficulty":"medium","question":"Khi xử lý dữ liệu tài chính, nhận định nào sau đây về các công cụ khai thác dữ liệu là SAI?","options":["Tableau là công cụ cực kỳ mạnh mẽ trong việc trực quan hóa dữ liệu","Công cụ Data Analysis Toolpak trong Excel có khả năng quản trị và xử lý các cơ sở dữ liệu siêu lớn (Big Data) lên tới hàng Terabyte","SAS là phần mềm chuyên dụng cho phân tích thống kê nâng cao, khai phá dữ liệu và dự báo.","Excel Solver thường được sử dụng để giải quyết các bài toán tối ưu hóa phức tạp."],"answer":1,"explanation":"Đáp án đúng: Công cụ Data Analysis Toolpak trong Excel có khả năng quản trị và xử lý các cơ sở dữ liệu siêu lớn (Big Data) lên tới hàng Terabyte"},{"id":"ch2-q16","difficulty":"medium","question":"Phân tích đề xuất trong phương pháp khai thác dữ liệu chủ yếu trả lời những câu hỏi nào?","options":["“Nó sẽ diễn ra như thế nào?” và “Nên làm gì tiếp theo?”","“Điều gì sẽ xảy ra?” và “Làm thế nào để đạt được kết quả mong muốn?”","“Điều gì sẽ xảy ra?” và “Nên làm gì tiếp theo?”","“Điều gì đã xảy ra?” và “Tại sao điều này lại xảy ra?”"],"answer":0,"explanation":"Đáp án đúng: “Nó sẽ diễn ra như thế nào?” và “Nên làm gì tiếp theo?”"},{"id":"ch2-q17","difficulty":"medium","question":"Các hệ thống hỗ trợ quyết định trong phương pháp khai thác dữ liệu \"phân tích đề xuất\" thực hiện chức năng gì?","options":["Dự đoán xu hướng thị trường","Đề xuất các hành động dựa trên dữ liệu đầu vào","Phân tích dữ liệu tài chính","Kiểm soát chất lượng sản phẩm"],"answer":1,"explanation":"Đáp án đúng: Đề xuất các hành động dựa trên dữ liệu đầu vào"},{"id":"ch2-q18","difficulty":"medium","question":"Nếu một chuyên viên tài chính muốn sử dụng thuật toán Hồi quy (Regression) thuộc nhóm Phân tích dự đoán, bài toán nào sau đây là phù hợp nhất?","options":["Xác định xem một giao dịch thẻ tín dụng có phải là lừa đảo hay không (Có/Không)","Dự báo mức giá cổ phiếu cụ thể (ví dụ: 55.000 VNĐ) của một công ty vào ngày mai.","Phân chia khách hàng thành 3 nhóm: Rủi ro cao, rủi ro trung bình, rủi ro thấp","Tìm ra quy luật khách hàng thường mua thẻ tín dụng cùng với bảo hiểm nhân thọ."],"answer":1,"explanation":"Đáp án đúng: Dự báo mức giá cổ phiếu cụ thể (ví dụ: 55.000 VNĐ) của một công ty vào ngày mai."},{"id":"ch2-q19","difficulty":"medium","question":"Phân tích mô tả và chẩn đoán trong phương pháp khai thác dữ liệu thường được ghép nối để thực hiện nhiệm vụ gì?","options":["Mô tả dữ liệu trong tương lai và đưa ra dự đoán","Mô tả dữ liệu trong quá khứ và so sánh dữ liệu đó với điểm chuẩn","Dự đoán kết quả và đưa ra đề xuất","Tối ưu hóa chi phí sản xuất"],"answer":1,"explanation":"Đáp án đúng: Mô tả dữ liệu trong quá khứ và so sánh dữ liệu đó với điểm chuẩn"},{"id":"ch2-q20","difficulty":"medium","question":"Hồi quy (Regression) trong phương pháp khai thác dữ liệu \"phân tích dự đoán\" được sử dụng để làm gì?","options":["Dự đoán giá trị liên tục dựa trên biến đầu vào","Phân loại các giao dịch đáng ngờ","Dự đoán mối quan hệ giữa hai mục dữ liệu","Xác định các lớp từ các quan sát trước đó"],"answer":0,"explanation":"Đáp án đúng: Dự đoán giá trị liên tục dựa trên biến đầu vào"},{"id":"ch2-q21","difficulty":"medium","question":"Bước nào trong quy trình tiêu chuẩn cho khai thác dữ liệu trong nhiều lĩnh vực bao gồm việc đánh giá chất lượng dữ liệu?","options":["Chuẩn bị dữ liệu.","Xây dựng mô hình.","Hiểu về dữ liệu.","Triển khai giải pháp."],"answer":2,"explanation":"Đáp án đúng: Hiểu về dữ liệu."},{"id":"ch2-q22","difficulty":"medium","question":"SAS nổi bật nhất ở khả năng nào?","options":["Quản lý cơ sở dữ liệu","Phân tích thống kê, khai phá dữ liệu, dự báo","Thiết kế giao diện người dùng","Phát triển ứng dụng di động, lập trình web"],"answer":1,"explanation":"Đáp án đúng: Phân tích thống kê, khai phá dữ liệu, dự báo"}]},{"id":"ch3","title":"Quản trị dữ liệu & Big Data","color":"#7BAFD4","questions":[{"id":"ch3-q1","difficulty":"medium","question":"Đâu là đặc điểm của mô hình ra quyết định và quản trị từ trên xuống?","options":["Liên kết rõ ràng giữa cấp điều hành và vận hành","Tiêu chuẩn đặt tên dữ liệu do người dùng định hướng.","Quyết định được hình thành từ cấp cơ sở","Phân quyền mạnh cho các bộ phận"],"answer":0,"explanation":"Đáp án đúng: Liên kết rõ ràng giữa cấp điều hành và vận hành"},{"id":"ch3-q2","difficulty":"medium","question":"Quản trị dữ liệu trong tổ chức cần sự tham gia của những yếu tố nào?","options":["Dữ liệu – công cụ – báo cáo","Con người – quy trình – công nghệ","Hệ thống – thuật toán – dữ liệu","Người dùng – ứng dụng – cơ sở dữ liệu"],"answer":1,"explanation":"Đáp án đúng: Con người – quy trình – công nghệ"},{"id":"ch3-q3","difficulty":"medium","question":"Chi phí cung cấp dữ liệu có thể được tính cho người tiêu dùng theo những cách nào?","options":["Số lượng người dùng cuối.","Số lượng nguồn chính được sử dụng.","Số lượng ứng dụng đang sử dụng.","Tất cả các phương án trên"],"answer":3,"explanation":"Đáp án đúng: Tất cả các phương án trên"},{"id":"ch3-q4","difficulty":"medium","question":"Mô hình nào dưới đây yêu cầu sự đào tạo và phổ biến bắt buộc trong toàn tổ chức?","options":["Quản trị dữ liệu tập trung.","Quản trị dữ liệu từ trên xuống.","Quản trị dữ liệu từ dưới lên.","Quản trị dữ liệu Silo-in"],"answer":0,"explanation":"Đáp án đúng: Quản trị dữ liệu tập trung."},{"id":"ch3-q5","difficulty":"medium","question":"Theo nghĩa rộng, quản trị dữ liệu đảm bảo điều gì cho tổ chức?","options":["Dữ liệu được quản lý thống nhất và có kiểm soát","Dữ liệu được lưu trữ đúng chuẩn và được bảo mật tuyệt đối","Dữ liệu được xử lý nhanh và chính xác","Tập trung vào xử lý dữ liệu."],"answer":0,"explanation":"Đáp án đúng: Dữ liệu được quản lý thống nhất và có kiểm soát"},{"id":"ch3-q6","difficulty":"medium","question":"Theo hiệp hội quản lý dữ liệu quốc tế (DAMA), quản trị dữ liệu bao gồm những hoạt động nào?","options":["Lập kế hoạch và kiểm soát việc lưu trữ dữ liệu","Giám sát và kiểm soát việc quản lý dữ liệu.","Lập kế hoạch, giám sát và kiểm soát việc quản lý dữ liệu cũng như việc sử dụng dữ liệu và các nguồn liên quan đến dữ liệu.","Tối ưu hóa việc khai thác dữ liệu để hỗ trợ quyết định"],"answer":2,"explanation":"Đáp án đúng: Lập kế hoạch, giám sát và kiểm soát việc quản lý dữ liệu cũng như việc sử dụng dữ liệu và các nguồn liên quan đến dữ liệu."},{"id":"ch3-q7","difficulty":"medium","question":"Một hệ thống chấm điểm tín dụng AI của ngân hàng đưa ra cảnh báo sai lệch (False positive) do dữ liệu đầu vào thu thập từ mạng xã hội khách hàng chứa nhiều thông tin mỉa mai, hoặc không đúng sự thật. Vấn đề này vi phạm trực tiếp đặc tính 'V' nào của Big Data?","options":["Variety","Value","Veracity","Variability"],"answer":2,"explanation":"Đáp án đúng: Veracity"},{"id":"ch3-q8","difficulty":"medium","question":"Một thuật toán giao dịch tần suất cao (HFT) của quỹ đầu tư yêu cầu phân tích hàng triệu lệnh mua bán chứng khoán trong vòng chưa tới 1 mili-giây để tự động đặt lệnh trước đối thủ. Khía cạnh này minh họa RÕ NÉT NHẤT cho đặc tính nào của Big Data?","options":["Value","Volume","Velocity","Variability"],"answer":2,"explanation":"Đáp án đúng: Velocity"},{"id":"ch3-q9","difficulty":"medium","question":"Trong Big Data, quy mô lưu trữ dữ liệu đã chuyển từ megabyte và gigabyte sang đơn vị nào?","options":["Kilobyte và megabyte","Gigabyte và terabyte","Terabyte và petabyte","Petabyte và exabyte"],"answer":2,"explanation":"Đáp án đúng: Terabyte và petabyte"},{"id":"ch3-q10","difficulty":"medium","question":"Những tiêu chí nào thường được sử dụng để lựa chọn mô hình trong quy trình tiêu chuẩn cho khai thác dữ liệu trong nhiều lĩnh vực?","options":["Chi phí và thời gian triển khai, lợi nhuận kỳ vọng","Độ chính xác, khả năng diễn giải, và thời gian thực hiện.","Khả năng thu hút khách hàng, mở rộng thị trường","Số lượng dữ liệu cần thiết."],"answer":1,"explanation":"Đáp án đúng: Độ chính xác, khả năng diễn giải, và thời gian thực hiện."},{"id":"ch3-q11","difficulty":"medium","question":"Các yếu tố nào thường được sử dụng để phân đoạn khách hàng dựa trên nhân khẩu học?","options":["Độ tuổi, giới tính, vị trí địa lý, thu nhập, nghề nghiệp","Hành vi mua sắm, thói quen tiêu dùng, sở thích cá nhân","Tình trạng sức khỏe, lịch sử bệnh án, nhu cầu y tế","Phong cách sống, giá trị cá nhân, quan điểm chính trị"],"answer":0,"explanation":"Đáp án đúng: Độ tuổi, giới tính, vị trí địa lý, thu nhập, nghề nghiệp"},{"id":"ch3-q12","difficulty":"medium","question":"Mô hình quản trị dữ liệu Silo-in hoạt động hiệu quả khi:","options":["Tập trung vào các mô hình dữ liệu duy nhất.","Áp dụng tiêu chuẩn dữ liệu từ cấp cao xuống","Có sự tham gia của đại diện nhiều bộ phận trong ra quyết định","Giao quyền quyết định cho các chuyên gia bên ngoài."],"answer":2,"explanation":"Đáp án đúng: Có sự tham gia của đại diện nhiều bộ phận trong ra quyết định"},{"id":"ch3-q13","difficulty":"medium","question":"Trong Big Data, đặc tính nào phản ánh việc đánh giá giá trị kinh doanh của dữ liệu?","options":["Veracity","Visualization","Volume","Value"],"answer":3,"explanation":"Đáp án đúng: Value"},{"id":"ch3-q14","difficulty":"medium","question":"Mô hình nào phù hợp nhất khi tổ chức cần kiểm soát chặt chẽ dữ liệu và đảm bảo tính nhất quán cao nhất?","options":["Mô hình ra quyết định và quản trị tập trung","Mô hình ra quyết định và quản trị Silo-in","Mô hình ra quyết định và quản trị từ dưới lên","Mô hình ra quyết định và quản trị từ trên xuống"],"answer":0,"explanation":"Đáp án đúng: Mô hình ra quyết định và quản trị tập trung"},{"id":"ch3-q15","difficulty":"medium","question":"Đặc tính Velocity của Big Data để cập đến:","options":["Tính nhất quán của tập dữ liệu","Tốc độ dữ liệu được tạo và xử lý","Chất lượng của dữ liệu thu được","Khối lượng dữ liệu được tạo và lưu trữ"],"answer":1,"explanation":"Đáp án đúng: Tốc độ dữ liệu được tạo và xử lý"}]},{"id":"ch4","title":"Mô hình hóa dữ liệu tài chính","color":"#C49A6C","questions":[{"id":"ch4-q1","difficulty":"medium","question":"Trong quy trình mô hình hóa dữ liệu tài chính, bước tiếp theo ngay sau huấn luyện mô hình là gì ?","options":["Xác định lại mục tiêu phân tích","Biểu diễn lại dữ liệu","Tinh chỉnh và đánh giá","Chọn mô hình phù hợp hơn"],"answer":2,"explanation":"Đáp án đúng: Tinh chỉnh và đánh giá"},{"id":"ch4-q2","difficulty":"medium","question":"Theo Trung tâm Nghiên cứu Ứng dụng Kinh doanh (BARC), mục tiêu nào sau đây không phải là mục tiêu trực tiếp của quản trị dữ liệu?","options":["Tạo điều kiện thuận lợi cho việc quản lý.","Nâng cao giá trị của dữ liệu.","Thiết lập các quy tắc nội bộ để sử dụng dữ liệu.","Tối đa hóa lợi nhuận kinh doanh"],"answer":3,"explanation":"Đáp án đúng: Tối đa hóa lợi nhuận kinh doanh"},{"id":"ch4-q3","difficulty":"medium","question":"Một doanh nghiệp lớn đa chi nhánh muốn giảm rủi ro mất kết nối giữa các bộ phận nhưng vẫn giữ tính chuyên môn hóa, nên chọn mô hình nào?","options":["Mô hình ra quyết định và quản trị tập trung","Mô hình ra quyết định và quản trị từ trên xuống","Mô hình ra quyết định và quản trị từ dưới lên","Mô hình ra quyết định và quản trị Silo-in"],"answer":3,"explanation":"Đáp án đúng: Mô hình ra quyết định và quản trị Silo-in"},{"id":"ch4-q4","difficulty":"medium","question":"Điều nào sau đây là một trong những mục tiêu cụ thể của mô hình hóa dữ liệu tài chính?","options":["Chuẩn hóa dữ liệu để đảm bảo tính nhất quán giữa các hệ thống","Xây dựng biểu diễn dữ liệu nhằm hỗ trợ dự đoán và ra quyết định tài chính","Loại bỏ hoàn toàn nhiễu trong dữ liệu đầu vào","Tối ưu hóa quy trình lưu trữ và truy xuất dữ liệu"],"answer":1,"explanation":"Đáp án đúng: Xây dựng biểu diễn dữ liệu nhằm hỗ trợ dự đoán và ra quyết định tài chính"},{"id":"ch4-q5","difficulty":"medium","question":"Khi đánh giá mô hình hóa dữ liệu tài chính, kỹ thuật nào sau đây được sử dụng để đánh giá độ chính xác của mô hình một cách toàn diện hơn?","options":["Phân chia dữ liệu.","Cross-validation.","Chỉ số đánh giá.","Giám sát mô hình sau triển khai"],"answer":1,"explanation":"Đáp án đúng: Cross-validation."},{"id":"ch4-q6","difficulty":"medium","question":"Yếu tố nào sau đây không phải là tiêu chí đánh giá chất lượng dữ liệu theo nghĩa trực tiếp?","options":["Độ chính xác","Tính đầy đủ","Tính nhất quán theo thời gian","Nguồn gốc dữ liệu nội bộ"],"answer":3,"explanation":"Đáp án đúng: Nguồn gốc dữ liệu nội bộ"},{"id":"ch4-q7","difficulty":"medium","question":"Theo Viện Quản trị Dữ liệu, nội dung nào sau đây không phải là nguyên tắc quản trị dữ liệu?","options":["Đảm bảo tính minh bạch","Nâng cao giá trị của dữ liệu","Trung thực trong việc trao đổi thông tin.","Xác định trách nhiệm về các quyết định liên quan đến dữ liệu."],"answer":1,"explanation":"Đáp án đúng: Nâng cao giá trị của dữ liệu"},{"id":"ch4-q8","difficulty":"medium","question":"Trong bước biểu diễn dữ liệu (data representation), hoạt động nào đóng vai trò cốt lõi?","options":["Lựa chọn thuật toán phù hợp với bài toán","Huấn luyện mô hình trên dữ liệu đã xử lý","Chuyển đổi dữ liệu về định dạng phù hợp","Đánh giá hiệu năng mô hình"],"answer":2,"explanation":"Đáp án đúng: Chuyển đổi dữ liệu về định dạng phù hợp"},{"id":"ch4-q9","difficulty":"medium","question":"Phương pháp nào phù hợp nhất để mô hình hóa mối quan hệ giữa biến đầu vào và giá trị tài chính liên tục?","options":["Hồi quy Tài chính.","Mạng Nơ-ron và Học Máy.","Phân Tích Chuỗi Thời Gian.","Mô hình Phân Tích Rủi Ro."],"answer":0,"explanation":"Đáp án đúng: Hồi quy Tài chính."},{"id":"ch4-q10","difficulty":"medium","question":"Một trong những khuyến nghị khi xây dựng hệ thống dữ liệu tài chính là gì?","options":["Tăng cường xử lý thủ công để kiểm soát","Chuyển sang tự động hóa cấp độ phân tích và ra quyết định","Giảm sự phức tạp của công nghệ để tiết kiệm chi phí","Giữ nguyên quy trình truyền thống"],"answer":1,"explanation":"Đáp án đúng: Chuyển sang tự động hóa cấp độ phân tích và ra quyết định"},{"id":"ch4-q11","difficulty":"medium","question":"Yếu tố nào sau đây không thuộc nhóm yếu tố cần xem xét trực tiếp trong mô hình hóa dữ liệu tài chính?","options":["Chất lượng dữ liệu","Nguồn dữ liệu","Thời gian xử lý mô hình","Tính biến động của dữ liệu tài chính"],"answer":2,"explanation":"Đáp án đúng: Thời gian xử lý mô hình"},{"id":"ch4-q12","difficulty":"medium","question":"Vai trò chiến lược của CFO trong quản trị dữ liệu tài chính là gì?","options":["Không có vai trò gì đặc biệt","Chỉ tập trung vào quản lý tài chính để phân phối cho các phòng ban","Kết nối và thúc đẩy hợp tác giữa các bộ phận","Hạn chế sự tham gia của CNTT vào hoạt động chung để giảm chi phí vận hành"],"answer":2,"explanation":"Đáp án đúng: Kết nối và thúc đẩy hợp tác giữa các bộ phận"},{"id":"ch4-q13","difficulty":"medium","question":"Kỹ thuật nào sau đây không được sử dụng để đánh giá và kiểm tra mô hình hóa dữ liệu tài chính?","options":["Phân chia dữ liệu.","Cross-validation.","Chỉ số đánh giá.","Giám sát mô hình"],"answer":3,"explanation":"Đáp án đúng: Giám sát mô hình"},{"id":"ch4-q14","difficulty":"medium","question":"Phương pháp nào sau đây được thiết kế chuyên biệt để định giá quyền chọn?","options":["Mô hình VaR","Mô hình ARIMA","Mô hình Black-Scholes","Mạng Nơ-ron"],"answer":2,"explanation":"Đáp án đúng: Mô hình Black-Scholes"},{"id":"ch4-q15","difficulty":"medium","question":"Trong giai đoạn triển khai và bảo trì mô hình, yếu tố nào không phải là yếu tố quan trọng cần xem xét?","options":["Tích hợp vào hệ thống.","Giám sát mô hình.","Điều chỉnh và cải tiến.","Lựa chọn mô hình."],"answer":3,"explanation":"Đáp án đúng: Lựa chọn mô hình."},{"id":"ch4-q16","difficulty":"medium","question":"Mô hình nào phổ biến trong phân tích chuỗi thời gian?","options":["Mô hình Black-Scholes","Mô hình VaR","Mô hình ARIMA","Hồi quy Logistic"],"answer":2,"explanation":"Đáp án đúng: Mô hình ARIMA"},{"id":"ch4-q17","difficulty":"medium","question":"Quy trình nào đảm bảo mô hình có thể áp dụng hiệu quả trên dữ liệu mới?","options":["Biểu diễn dữ liệu và chọn biến","Huấn luyện và kiểm định","Lựa chọn mô hình phù hợp","Chuẩn hóa dữ liệu đầu vào"],"answer":1,"explanation":"Đáp án đúng: Huấn luyện và kiểm định"},{"id":"ch4-q18","difficulty":"medium","question":"Mô hình nào sau đây gắn liền với việc định giá tài sản tài chính phái sinh?","options":["Mô hình Black-Scholes","Mô hình VaR","Mô hình ARIMA","Hồi quy Logistic"],"answer":0,"explanation":"Đáp án đúng: Mô hình Black-Scholes"},{"id":"ch4-q19","difficulty":"medium","question":"Khái niệm “tuân thủ” trong mô hình hóa dữ liệu tài chính gắn với nội dung nào?","options":["Đảm bảo mô hình tuân thủ các quy định pháp lý và chuẩn mực","Đảm bảo dữ liệu được cập nhật thường xuyên.","Đảm bảo mô hình hoạt động tốt trong điều kiện thay đổi của thị trường.","Đảm bảo mô hình có độ chính xác cao."],"answer":0,"explanation":"Đáp án đúng: Đảm bảo mô hình tuân thủ các quy định pháp lý và chuẩn mực"},{"id":"ch4-q20","difficulty":"medium","question":"Trong phân khúc khách hàng, dữ liệu tài chính có thể giúp doanh nghiệp xác định điều gì?","options":["Tối ưu chi phí vận hành nội bộ","Xác định sản phẩm phù hợp cho từng nhóm khách hàng","Quản lý nhân sự","Dự đoán xu hướng công nghệ"],"answer":1,"explanation":"Đáp án đúng: Xác định sản phẩm phù hợp cho từng nhóm khách hàng"},{"id":"ch4-q21","difficulty":"medium","question":"Giả định về tính dừng trong mô hình hóa dữ liệu tài chính để cập đến điều gì?","options":["Các biến không thay đổi theo thời gian","Dữ liệu không có biến động mạnh","Các đặc tính thống kê của chuỗi thời gian không đổi theo thời gian","Các quan sát độc lập hoàn toàn"],"answer":2,"explanation":"Đáp án đúng: Các đặc tính thống kê của chuỗi thời gian không đổi theo thời gian"}]},{"id":"ch5","title":"Thị trường dữ liệu & Dữ liệu tài chính","color":"#9B7EC8","questions":[{"id":"ch5-q1","difficulty":"medium","question":"Trong thị trường dữ liệu, việc cấp phép sử dụng phù hợp có ý nghĩa quan trọng nhất ở khía cạnh nào?","options":["Bảo vệ quyền khai thác và tài sản trí tuệ của dữ liệu","Làm giảm trực tiếp chi phí vận hành dữ liệu","Tạo điều kiện mở rộng tệp khách hàng ngay lập tức","Rút ngắn thời gian xử lý dữ liệu cho người dùng cuối"],"answer":0,"explanation":"Đáp án đúng: Bảo vệ quyền khai thác và tài sản trí tuệ của dữ liệu"},{"id":"ch5-q2","difficulty":"medium","question":"Mô hình định giá nào gắn giấy phép sử dụng trực tiếp với từng hoạt động hoặc mục đích khai thác cụ thể?","options":["Định giá dựa trên trường hợp sử dụng","Định giá theo từng sản phẩm","Định giá dựa trên tệp","Giới hạn số lượng người dùng"],"answer":0,"explanation":"Đáp án đúng: Định giá dựa trên trường hợp sử dụng"},{"id":"ch5-q3","difficulty":"medium","question":"Yếu tố nào sau đây là một chỉ tiêu tài chính mang tính định lượng rõ nhất?","options":["Chất lượng đội ngũ quản lý","Triển vọng môi trường kinh doanh","Lợi nhuận gộp trong kỳ","Yếu tố pháp lý và quy định."],"answer":2,"explanation":"Đáp án đúng: Lợi nhuận gộp trong kỳ"},{"id":"ch5-q4","difficulty":"medium","question":"Thỏa thuận bản quyền trong cung cấp dữ liệu chủ yếu nhằm bảo vệ yếu tố nào sau đây?","options":["Cơ cấu chi phí và tỷ suất lợi nhuận","Doanh thu tương lai và quyền sở hữu trí tuệ","Quy mô thị trường và mạng lưới phân phối","Danh mục khách hàng và chuỗi cung ứng"],"answer":1,"explanation":"Đáp án đúng: Doanh thu tương lai và quyền sở hữu trí tuệ"},{"id":"ch5-q5","difficulty":"medium","question":"Định giá dựa trên trường hợp sử dụng liên quan đến gì?","options":["Các quy trình kinh doanh hoặc các báo cáo cụ thể cho các cơ quan quản lý hoặc khách hàng.","Các quy trình sản xuất và các quy trình marketing.","Các quy trình marketing và các quy trình nhân sự.","Các quy trình nhân sự và các quy trình kinh doanh."],"answer":0,"explanation":"Đáp án đúng: Các quy trình kinh doanh hoặc các báo cáo cụ thể cho các cơ quan quản lý hoặc khách hàng."},{"id":"ch5-q6","difficulty":"medium","question":"Theo tính chất tài chính, dữ liệu tài chính gồm những loại nào?","options":["Dữ liệu tài chính nội bộ và dữ liệu tài chính bên ngoài.","Tài sản và nợ phải trả.","Dữ liệu định lượng và định tính.","Dữ liệu tài chính lịch sử và dữ liệu tài chính hiện tại."],"answer":2,"explanation":"Đáp án đúng: Dữ liệu định lượng và định tính."},{"id":"ch5-q7","difficulty":"medium","question":"Định giá theo từng sản phẩm thường áp dụng cho loại dữ liệu nào?","options":["Dữ liệu liên quan đến \"danh mục đầu tư\".","Dữ liệu liên quan đến báo cáo tài chính.","Dữ liệu liên quan đến nghiên cứu thị trường.","Dữ liệu liên quan đến báo cáo môi trường."],"answer":0,"explanation":"Đáp án đúng: Dữ liệu liên quan đến \"danh mục đầu tư\"."},{"id":"ch5-q8","difficulty":"medium","question":"Dữ liệu về lãi suất và tỷ giá hối đoái thuộc loại nào?","options":["Dữ liệu tài chính nội bộ.","Dữ liệu tài chính bên ngoài.","Dữ liệu tài chính lịch sử.","Dữ liệu tài chính dự báo."],"answer":1,"explanation":"Đáp án đúng: Dữ liệu tài chính bên ngoài."},{"id":"ch5-q9","difficulty":"medium","question":"Về nguyên tắc, thỏa thuận bản quyền dữ liệu thường được xây dựng trên cơ sở nào?","options":["Mức sinh lời kỳ vọng của nhà cung cấp dữ liệu","Tổng chi phí tạo lập và duy trì dữ liệu","Giá trị mà khách hàng thực sự nhận được từ dữ liệu","Quy mô của thị trường mà dữ liệu đang phục vụ"],"answer":2,"explanation":"Đáp án đúng: Giá trị mà khách hàng thực sự nhận được từ dữ liệu"},{"id":"ch5-q10","difficulty":"medium","question":"Biến thể phổ biến của mô hình định giá theo từng sản phẩm là hình thức nào sau đây?","options":["Thu phí theo từng lần truy cập hoặc từng lần xem báo cáo","Thu phí cố định theo tháng bất kể mức độ sử dụng","Thu phí định kỳ theo năm cho toàn bộ hệ thống","Thu phí theo số lượng khách hàng cuối cùng của doanh nghiệp"],"answer":0,"explanation":"Đáp án đúng: Thu phí theo từng lần truy cập hoặc từng lần xem báo cáo"},{"id":"ch5-q11","difficulty":"medium","question":"Định giá hàng loạt còn được gọi là:","options":["Định giá dựa trên trường hợp sử dụng","Định giá theo từng sản phẩm","Định giá dựa trên tệp","Giới hạn số lượng người dùng"],"answer":2,"explanation":"Đáp án đúng: Định giá dựa trên tệp"},{"id":"ch5-q12","difficulty":"medium","question":"Trong các dữ liệu sau, đâu là dữ liệu tài chính mang tính định tính?","options":["Doanh thu thuần","Tổng chi phí hoạt động","Biên lợi nhuận gộp","Năng lực và chất lượng quản trị điều hành"],"answer":3,"explanation":"Đáp án đúng: Năng lực và chất lượng quản trị điều hành"},{"id":"ch5-q13","difficulty":"medium","question":"Các mô hình cấp phép nào được áp dụng cho việc định giá dữ liệu?","options":["Định giá theo từng sản phẩm, định giá theo từng khách hàng, định giá theo từng năm, định giá theo từng tháng.","Định giá theo từng năm, định giá theo từng tháng, định giá theo từng tệp, định giá theo từng sản phẩm.","Định giá theo từng tệp, định giá theo từng khách hàng, định giá theo từng sản phẩm, định giá theo từng tháng.","Định giá theo từng sản phẩm, định giá dựa trên tệp, giới hạn số lượng người dùng, định giá dựa trên trường hợp sử dụng."],"answer":3,"explanation":"Đáp án đúng: Định giá theo từng sản phẩm, định giá dựa trên tệp, giới hạn số lượng người dùng, định giá dựa trên trường hợp sử dụng."},{"id":"ch5-q14","difficulty":"medium","question":"Khái niệm “quyền lợi trong quản lý dữ liệu” gắn trực tiếp với nội dung nào dưới đây?","options":["Kiểm soát chi phí và tối ưu lợi nhuận từ dữ liệu","Kiểm soát quyền đối với nội dung dữ liệu và việc báo cáo sử dụng dữ liệu","Kiểm soát quy mô thị trường khai thác dữ liệu","Kiểm soát hành vi mua và nhu cầu của khách hàng dữ liệu"],"answer":1,"explanation":"Đáp án đúng: Kiểm soát quyền đối với nội dung dữ liệu và việc báo cáo sử dụng dữ liệu"},{"id":"ch5-q15","difficulty":"medium","question":"Mục tiêu chính của các mô hình định giá là gì?","options":["Tăng cường lợi nhuận cho nhà cung cấp.","Đảm bảo khách hàng luôn mua sản phẩm.","Đạt được sự cân bằng giữa việc phục vụ khách hàng và giá trị nhận được từ nhà cung cấp.","Tối đa hóa số lượng giấy phép bán ra."],"answer":2,"explanation":"Đáp án đúng: Đạt được sự cân bằng giữa việc phục vụ khách hàng và giá trị nhận được từ nhà cung cấp."},{"id":"ch5-q16","difficulty":"medium","question":"Lợi ích nổi bật của việc quản lý và chia sẻ thông tin bằng cơ sở dữ liệu là gì?","options":["Tăng khả năng phối hợp, hỗ trợ ra quyết định và sử dụng dữ liệu hiệu quả cho nhiều mục đích khác nhau.","Làm giảm nhu cầu sử dụng thông tin giữa các bộ phận khác nhau.","Chỉ giúp tiết kiệm không gian lưu trữ so với lưu hồ sơ giấy.","Giúp loại bỏ hoàn toàn sai sót trong quá trình xử lý dữ liệu"],"answer":0,"explanation":"Đáp án đúng: Tăng khả năng phối hợp, hỗ trợ ra quyết định và sử dụng dữ liệu hiệu quả cho nhiều mục đích khác nhau."},{"id":"ch5-q17","difficulty":"medium","question":"Dữ liệu tài chính thường được sử dụng vào mục đích nào sau đây?","options":["Thay thế toàn bộ hoạt động quản trị, điều hành và tiếp thị của doanh nghiệp.","Đo lường, phân tích, dự báo và hỗ trợ quản lý các hoạt động tài chính.","Chỉ phục vụ cho công tác kiểm toán và quyết toán cuối kỳ.","Lưu trữ hồ sơ giao dịch để đối chiếu khi cần, không phục vụ phân tích."],"answer":1,"explanation":"Đáp án đúng: Đo lường, phân tích, dự báo và hỗ trợ quản lý các hoạt động tài chính."},{"id":"ch5-q18","difficulty":"medium","question":"Trong các loại dữ liệu sau, dữ liệu nào không thuộc nhóm dữ liệu tài chính bên ngoài của doanh nghiệp?","options":["Dữ liệu về giá cổ phiếu niêm yết trên thị trường","Thông tin về lãi suất thị trường và tỷ giá hối đoái","Báo cáo tài chính công bố của doanh nghiệp đối thủ","Nhật ký kế toán và sổ cái tổng hợp của doanh nghiệp"],"answer":3,"explanation":"Đáp án đúng: Nhật ký kế toán và sổ cái tổng hợp của doanh nghiệp"},{"id":"ch5-q19","difficulty":"medium","question":"Định giá dựa trên tệp thường được áp dụng trong trường hợp nào?","options":["Khi sản phẩm dữ liệu được phân chia thành các danh mục khác nhau.","Khi sản phẩm dữ liệu chỉ tồn tại dưới dạng một báo cáo tổng hợp duy nhất","Khi dữ liệu không thể tách thành bất kỳ đơn vị lưu trữ nào","Khi dữ liệu được định giá hoàn toàn theo nhóm khách hàng sử dụng"],"answer":0,"explanation":"Đáp án đúng: Khi sản phẩm dữ liệu được phân chia thành các danh mục khác nhau."},{"id":"ch5-q20","difficulty":"medium","question":"Trong quá trình khai thác cơ sở dữ liệu, người dùng có thể thực hiện hoạt động nào sau đây?","options":["Chỉ được xem dữ liệu đã có sẵn mà không thể tác động lên dữ liệu.","Chỉ có thể thêm mới dữ liệu nhưng không thể chỉnh sửa hay truy xuất.","Sử dụng các công cụ hoặc ngôn ngữ truy vấn để tìm kiếm, lọc và trích xuất thông tin cần thiết.","Chủ yếu sử dụng cơ sở dữ liệu để lưu trữ tạm thời trong bộ nhớ máy tính"],"answer":2,"explanation":"Đáp án đúng: Sử dụng các công cụ hoặc ngôn ngữ truy vấn để tìm kiếm, lọc và trích xuất thông tin cần thiết."},{"id":"ch5-q21","difficulty":"medium","question":"Dữ liệu tài chính có thể liên quan đến những đối tượng nào?","options":["Chỉ liên quan đến doanh nghiệp và các tổ chức kinh tế.","Chỉ liên quan đến cá nhân có phát sinh thu nhập và nghĩa vụ thuế.","Chỉ liên quan đến các tổ chức tài chính như ngân hàng, công ty bảo hiểm và quỹ đầu tư.","Liên quan đến cá nhân, tổ chức và các thực thể kinh tế khác có hoạt động tài chính."],"answer":3,"explanation":"Đáp án đúng: Liên quan đến cá nhân, tổ chức và các thực thể kinh tế khác có hoạt động tài chính."},{"id":"ch5-q22","difficulty":"medium","question":"Báo cáo tài chính nào cho thấy tình hình tài sản, nợ phải trả và vốn chủ sở hữu của một doanh nghiệp tại một thời điểm cụ thể?","options":["Báo cáo tình hình tài chính","Báo cáo kết quả hoạt động kinh doanh (Income Statement)","Báo cáo lưu chuyển tiền tệ (Cash Flow Statement)","Báo cáo tình hình kế toán"],"answer":0,"explanation":"Đáp án đúng: Báo cáo tình hình tài chính"},{"id":"ch5-q23","difficulty":"medium","question":"Báo cáo nào phản ánh doanh thu, chi phí và lợi nhuận của doanh nghiệp trong một kỳ kế toán?","options":["Báo cáo tình hình tài chính","Báo cáo kết quả hoạt động kinh doanh (Income Statement)","Báo cáo lưu chuyển tiền tệ (Cash Flow Statement)","Báo cáo tình hình kế toán"],"answer":1,"explanation":"Đáp án đúng: Báo cáo kết quả hoạt động kinh doanh (Income Statement)"},{"id":"ch5-q24","difficulty":"medium","question":"Báo cáo lưu chuyển tiền tệ cung cấp thông tin gì?","options":["Tình hình tài sản, nợ phải trả và vốn chủ sở hữu","Doanh thu, chi phí và lợi nhuận","Các luồng tiền vào và ra khỏi doanh nghiệp","Khả năng sinh lời của doanh nghiệp"],"answer":2,"explanation":"Đáp án đúng: Các luồng tiền vào và ra khỏi doanh nghiệp"},{"id":"ch5-q25","difficulty":"medium","question":"Để hạn chế tình trạng lạm dụng dữ liệu trong quá trình khai thác và sử dụng, người sử dụng dữ liệu cần thực hiện biện pháp nào sau đây?","options":["Đối sánh nhu cầu sử dụng dữ liệu với các dịch vụ dữ liệu hiện có trên thị trường trước khi lựa chọn.","Ưu tiên mua càng nhiều dịch vụ dữ liệu càng tốt để tránh thiếu hụt thông tin trong quá trình sử dụng.","Sử dụng dữ liệu theo nhu cầu thực tế mà không cần xem xét mức độ phù hợp của nguồn cung cấp dữ liệu.","Hạn chế tối đa việc sử dụng các dịch vụ dữ liệu nhằm loại bỏ hoàn toàn nguy cơ lạm dụng dữ liệu"],"answer":0,"explanation":"Đáp án đúng: Đối sánh nhu cầu sử dụng dữ liệu với các dịch vụ dữ liệu hiện có trên thị trường trước khi lựa chọn."},{"id":"ch5-q26","difficulty":"medium","question":"Dữ liệu tài chính là gì?","options":["Thông tin liên quan đến các hoạt động tài chính chính của một tổ chức, cá nhân hoặc một tổ chức kinh tế thực tế khác.","Toàn bộ thông tin phát sinh trong hoạt động sản xuất, kinh doanh và nhân sự của doanh nghiệp.","Các dữ liệu chỉ liên quan đến doanh thu, chi phí và lợi nhuận của doanh nghiệp.","Các con số kế toán được thu thập để lập báo cáo tài chính cuối năm."],"answer":0,"explanation":"Đáp án đúng: Thông tin liên quan đến các hoạt động tài chính chính của một tổ chức, cá nhân hoặc một tổ chức kinh tế thực tế khác."},{"id":"ch5-q27","difficulty":"medium","question":"Dữ liệu là gì?","options":["Là những con số hoặc ký hiệu chỉ được sử dụng trong hoạt động thống kê và tính toán.","Là thông tin đã được xử lý, sắp xếp hoàn chỉnh và có thể sử dụng ngay cho việc ra quyết định.","Là các sự kiện, giá trị hoặc tín hiệu thô được thu thập từ thực tế, chưa nhất thiết đã qua xử lý hay diễn giải.","Là tập hợp các nội dung đa phương tiện như hình ảnh, âm thanh và video được lưu trữ trong máy tính"],"answer":2,"explanation":"Đáp án đúng: Là các sự kiện, giá trị hoặc tín hiệu thô được thu thập từ thực tế, chưa nhất thiết đã qua xử lý hay diễn giải."},{"id":"ch5-q28","difficulty":"medium","question":"Nội dung nào mô tả đầy đủ nhất về dữ liệu tài chính?","options":["Chỉ bao gồm các số liệu kế toán dùng để tổng hợp báo cáo cuối kỳ.","Bao gồm các số liệu, chỉ tiêu và thông tin liên quan, được sử dụng để đo lường, phân tích, dự báo và quản lý hoạt động tài chính.","Chỉ bao gồm dữ liệu có cấu trúc được lưu trong bảng tính hoặc phần mềm kế toán.","Bao gồm mọi loại dữ liệu của doanh nghiệp, kể cả dữ liệu truyền thông và hình ảnh quảng bá."],"answer":1,"explanation":"Đáp án đúng: Bao gồm các số liệu, chỉ tiêu và thông tin liên quan, được sử dụng để đo lường, phân tích, dự báo và quản lý hoạt động tài chính."},{"id":"ch5-q29","difficulty":"medium","question":"Tỷ giá hối đoái (Exchange Rates) đo lường điều gì?","options":["Giá cổ phiếu của các công ty niêm yết trên sàn giao dịch chứng khoán","Chi phí vay vốn trên thị trường tài chính","Tỷ lệ chuyển đổi giữa các đồng tiền khác nhau","Sự tăng giá chung của hàng hóa và dịch vụ"],"answer":2,"explanation":"Đáp án đúng: Tỷ lệ chuyển đổi giữa các đồng tiền khác nhau"},{"id":"ch5-q30","difficulty":"medium","question":"Dạng dữ liệu nào phổ biến nhất và được sử dụng rộng rãi trong lĩnh vực tin học?","options":["Dữ liệu hình ảnh số, do có khả năng truyền tải lượng thông tin trực quan lớn","Dữ liệu âm thanh số, vì gắn liền với hầu hết các hệ thống giao tiếp hiện đại","Dữ liệu ngôn ngữ, được biểu diễn dưới dạng chữ viết, chữ số hoặc tiếng nói","Dữ liệu mùi, do ngày càng được quan tâm trong các hệ thống cảm biến thông minh"],"answer":2,"explanation":"Đáp án đúng: Dữ liệu ngôn ngữ, được biểu diễn dưới dạng chữ viết, chữ số hoặc tiếng nói"},{"id":"ch5-q31","difficulty":"medium","question":"Lãi suất (Interest Rates) phản ánh điều gì?","options":["Giá cổ phiếu của các công ty niêm yết trên sàn giao dịch chứng khoán","Chi phí vay vốn trên thị trường tài chính","Tỷ lệ chuyển đổi giữa các đồng tiền khác nhau","Tốc độ tăng trưởng của tổng sản phẩm quốc nội"],"answer":1,"explanation":"Đáp án đúng: Chi phí vay vốn trên thị trường tài chính"},{"id":"ch5-q32","difficulty":"medium","question":"Mục đích chính của cơ sở dữ liệu là gì?","options":["Lưu trữ dữ liệu dưới dạng văn bản, hình ảnh và âm thanh để tra cứu khi cần.","Tổ chức lưu trữ dữ liệu nhằm phục vụ việc truy cập, khai thác và xử lý thông tin của nhiều người dùng hoặc nhiều ứng dụng.","Hỗ trợ thiết kế biểu mẫu và giao diện nhập dữ liệu chuyên nghiệp.","Tạo môi trường chia sẻ tệp tin nhanh hơn giữa các phòng ban trong doanh nghiệp."],"answer":1,"explanation":"Đáp án đúng: Tổ chức lưu trữ dữ liệu nhằm phục vụ việc truy cập, khai thác và xử lý thông tin của nhiều người dùng hoặc nhiều ứng dụng."},{"id":"ch5-q33","difficulty":"medium","question":"Cơ sở dữ liệu (CSDL) là gì?","options":["Một tập hợp dữ liệu số được lưu rải rác trên nhiều thiết bị lưu trữ khác nhau.","Một hệ thống lưu trữ dữ liệu có tổ chức, cho phép lưu trữ, cập nhật và khai thác thông tin hiệu quả.","Một phần mềm hỗ trợ nhập liệu và trình bày báo cáo thống kê.","Một bộ nhớ điện tử dùng để sao lưu dữ liệu lâu dài."],"answer":1,"explanation":"Đáp án đúng: Một hệ thống lưu trữ dữ liệu có tổ chức, cho phép lưu trữ, cập nhật và khai thác thông tin hiệu quả."},{"id":"ch5-q34","difficulty":"medium","question":"Chỉ số thanh khoản (Liquidity Ratios) đo lường điều gì?","options":["Khả năng của doanh nghiệp trong việc thanh toán các khoản nợ ngắn hạn","Khả năng sinh lời của doanh nghiệp từ các hoạt động kinh doanh","Mức độ sử dụng nợ của doanh nghiệp","Tình hình tài sản, nợ phải trả và vốn chủ sở hữu"],"answer":0,"explanation":"Đáp án đúng: Khả năng của doanh nghiệp trong việc thanh toán các khoản nợ ngắn hạn"},{"id":"ch5-q35","difficulty":"medium","question":"Chỉ số nào đo lường khả năng sinh lời của doanh nghiệp từ các hoạt động kinh doanh?","options":["Chỉ số thanh khoản (Liquidity Ratios)","Chỉ số khả năng sinh lời (Profitability Ratios)","Chỉ số nợ (Debt Ratios)","Chỉ số thất nghiệp (Unemployment Rate)"],"answer":1,"explanation":"Đáp án đúng: Chỉ số khả năng sinh lời (Profitability Ratios)"}]}]};
+  DATA = INLINE_DATA;
+  // Optionally reload from questions.json if available (for updates)
+  try {
+    const resp = await fetch('./questions.json');
+    if(resp.ok) DATA = await resp.json();
+  } catch(e) { /* use inline data */ }
+  // Build DOM
+  const topbar = renderTopbar();
+  const shell = el('div',''); shell.id='shell';
+  const sidebar = renderSidebar();
+  const mobileNav = renderMobileNav();
+  shell.appendChild(sidebar);
+  const histOverlay = buildHistPanel();
+  app.appendChild(topbar);
+  app.appendChild(mobileNav);
+  app.appendChild(shell);
+  app.appendChild(histOverlay);
+  updateProgressDots();
+  // Hash routing
+  function handleHash() {
+    const view = window.location.hash.slice(1)||'home';
+    renderView(view);
+  }
+  window.addEventListener('hashchange', handleHash);
+  handleHash();
+}
+
+boot();
+</script>
+</body>
+</html>
